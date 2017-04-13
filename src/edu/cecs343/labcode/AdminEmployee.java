@@ -11,6 +11,7 @@ package edu.cecs343.labcode;
  */
 public class AdminEmployee extends Employee {
     
+    private String test = "It works!!";
     public String adminDate;
     public String reason;
     
