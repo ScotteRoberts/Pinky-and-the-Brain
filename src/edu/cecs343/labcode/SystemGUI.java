@@ -1390,6 +1390,15 @@ public class SystemGUI {
         
     }
     
+    public class BackButton implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Add main menu option here
+            
+        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
    
     public JPanel editAppointment(){
         // Sets up edit appointment pannel
