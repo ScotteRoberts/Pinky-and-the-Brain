@@ -15,7 +15,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class SystemGUI {
-    CalendarHub calHub;
+    static CalendarHub calHub;
     
     public  static SystemSQL sysSQL; 
     
@@ -24,7 +24,7 @@ public class SystemGUI {
     //public JPanel mainPanel;
     public static JPanel masterPanel;
     
-    JLabel mainLabel;
+    public static JLabel mainLabel;
     
     JTextField test;
     
@@ -78,6 +78,8 @@ public class SystemGUI {
     public static JComboBox apptBox = null;
     public static final String SEARCH = "Search";
     public static String apptDateTimeDoc = null;
+    
+    private LoginPage login =  new LoginPage();
     
     
     SystemGUI(){
@@ -172,132 +174,10 @@ public class SystemGUI {
         
     }
     
-    
-    
     public JPanel login(){
-        /*
-        Fucntion sets up the login page
-        */
-        
-        JPanel mainPanel;
-        clearPanel();
- 
-        //SystemGUI.wait = true;
-        mainPanel = new JPanel(new GridLayout(5,1));
-        // Show title
-        JLabel message = new JLabel("Welcome to Prometheus");
-        message.setFont(new Font("ariel", Font.PLAIN, 24));
-        mainPanel.add(message);
-        
-        // Set first login panel
-        JPanel userNameP1 = new JPanel(new GridLayout(1,2));
-        JLabel userName = new JLabel("Username");
-        eUserName = new JTextField(10);
-        userNameP1.add(userName);
-        userNameP1.add(eUserName);
-        mainPanel.add(userNameP1);
-        
-        // Set second login panel
-        JPanel userNameP2 =   new JPanel(new GridLayout(1,2));
-        JLabel password = new JLabel("Passowrd");
-        ePassword = new JPasswordField(10);
-        userNameP2.add(password);
-        userNameP2.add(ePassword);
-        mainPanel.add(userNameP2);
-        
-        // Set thrid panel
-        JPanel userNameP3 = new JPanel(new GridLayout(1,1));
-        JButton loginOk = new JButton("Login");
-        loginOk.addActionListener(new loginResponse());
-        userNameP3.add(loginOk);
-        mainPanel.add(userNameP3);
-        
-        
-        // Set fourth panel
-        JPanel userNameP4 = new JPanel(new GridLayout(1,1));
-        mainLabel = new JLabel("");
-        userNameP4.add(mainLabel);
-        mainPanel.add(userNameP4);
-        
-        //SystemGUI.mainFrame.add(mainPanel);
-        SystemGUI.masterPanel.add(mainPanel);
-        updatePanel();
-        return mainPanel;
+        return login.login();
     }
     
-    class AccountInfo
-    {
-        String userName;
-        int employeeType;
-        public AccountInfo()
-        {
-            
-        }
-    }
-    
-    class loginResponse implements ActionListener{
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            
-            if(!eUserName.getText().equals("") && 
-                    !(new String(ePassword.getPassword())).equals("")){
-                // Test username and then change status
-                System.out.println("Login probe 1");
-                // How will I return employee information??
-                if(sysSQL.testUserName(eUserName.getText())){
-                    String tempPassword = new String(ePassword.getPassword());
-                    currentEmployee = sysSQL.getEmployeeUserName(eUserName.getText().toUpperCase(), 
-                            tempPassword);
-                    if(currentEmployee != null){
-                        mainLabel.setText("Found");
-                        // Change screen to main screen
-                        int employeeType = sysSQL.testEmployeeType(currentEmployee.eID);
-                        String currentUsername = eUserName.getText().toUpperCase();
-                        calHub.loginInfo.setText(currentUsername);
-                        calHub.currentDisplay = 1;
-                        int displayType = 1;
-                        switch(employeeType){
-                            case 1:
-                                //admin
-                                calHub.setVisibleHomePanel(employeeType, displayType);
-                                calHub.currentEmployee = employeeType;
-                                break;
-                            case 2:
-                                //Medical
-                                calHub.setVisibleHomePanel(employeeType, displayType);
-                                calHub.currentEmployee = employeeType;
-                                break;
-                            case 3:
-                                //NonMedical
-                                calHub.setVisibleHomePanel(employeeType, displayType);
-                                calHub.currentEmployee = employeeType;
-                                break;
-                            default:
-                                break;
-                        }
-                             
-                    }
-                    else{
-                        mainLabel.setText("Invalid password");
-                        }
-                }
-                else{
-                    mainLabel.setText("Invalid username");
-                }
-                
-                
-                return;
-                
-            }
-            else{
-                mainLabel.setText("NULL");
-            }
-            
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        
-    }
     
     
     public JPanel createEmployee(){
