@@ -61,7 +61,7 @@ public class CECS343 {
         */
         
         SystemGUI g = new SystemGUI();
-        g.makeAdminAccount();
+        //g.makeAdminAccount();
         //g.createNurse();
         //g.createDoctor();
         //g.createNonMedicalEmployee();

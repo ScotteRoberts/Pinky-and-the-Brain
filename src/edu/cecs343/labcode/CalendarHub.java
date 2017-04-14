@@ -511,8 +511,8 @@ public class CalendarHub {
         clearMasterPanel();
         //Send to Login page and change currentEmployee to whoever logs in.
         menuBar.setVisible(false);
-        //masterPanel.add(sysGUI.login());
-        masterPanel.add(sysGUI.createEmployee());
+        masterPanel.add(sysGUI.login());
+        //masterPanel.add(sysGUI.createEmployee());
     }
     
     //----------------------------------------------------------------- Home Panel Visibility
