@@ -17,67 +17,67 @@ import java.util.ArrayList;
 public class SystemGUI {
     CalendarHub calHub;
     
-    SystemSQL sysSQL; 
+    public  static SystemSQL sysSQL; 
     
-    JFrame mainFrame;
+    public static JFrame mainFrame;
     
     //public JPanel mainPanel;
-    JPanel masterPanel;
+    public static JPanel masterPanel;
     
     JLabel mainLabel;
     
     JTextField test;
     
     // used by all employee fields
-    private JTextField employeeID = new JTextField(10);
-    private JTextField eFirstName = new JTextField(10);
-    private JTextField eLastName = new JTextField(10);
-    private JTextField ePhone  = new JTextField(10);
-    private JTextField eUserName = new JTextField(10);
-    private JTextField eReUserName = new JTextField(10);
-    private JPasswordField ePassword = new JPasswordField(10);
-    private JPasswordField eRePassword = new JPasswordField(10);
-    private JPasswordField oldPass = new JPasswordField(10);
+    public static JTextField employeeID = new JTextField(10);
+    public static JTextField eFirstName = new JTextField(10);
+    public static JTextField eLastName = new JTextField(10);
+    public static JTextField ePhone  = new JTextField(10);
+    public static JTextField eUserName = new JTextField(10);
+    public static JTextField eReUserName = new JTextField(10);
+    public static JPasswordField ePassword = new JPasswordField(10);
+    public static JPasswordField eRePassword = new JPasswordField(10);
+    public static JPasswordField oldPass = new JPasswordField(10);
     
     // Used to create doctor
-    private JTextField eDegree = new JTextField(10);
-    private JTextField eCollege = new JTextField(10);
-    private JTextField eLicenseNumber = new JTextField(10);
+    public static JTextField eDegree = new JTextField(10);
+    public static JTextField eCollege = new JTextField(10);
+    public static JTextField eLicenseNumber = new JTextField(10);
     
     // Non admin employee
-    private JTextField eTitle = new JTextField(10);
+    public static JTextField eTitle = new JTextField(10);
     
     // currrent employee information
-    Employee        currentEmployee = null;
-    AdminEmployee   currentAdmin = null;
-    Doctor          currentDoctor = null;
-    Nurse           currentNurse = null;
-    NonMedicalEmployee currentNonMed =  null;
-    Patient currentPatient = null;
+    public static Employee        currentEmployee = null;
+    public static AdminEmployee   currentAdmin = null;
+    public static Doctor          currentDoctor = null;
+    public static Nurse           currentNurse = null;
+    public static NonMedicalEmployee currentNonMed =  null;
+    public static Patient currentPatient = null;
     
     // Used to create account 
-    private final String eType[] = {"Admin", "Doctor", "Nurse", "Non-medical"}; 
-    private JTextField eDFirstName = new JTextField(10);
-    private JTextField eDLastName = new JTextField(10);
-    private JTextField eDate = new JTextField(10);
-    private JTextField eTime = new JTextField(10);
-    private JComboBox empTypes = new JComboBox(eType);
+    public static final String eType[] = {"Admin", "Doctor", "Nurse", "Non-medical"}; 
+    public static JTextField eDFirstName = new JTextField(10);
+    public static JTextField eDLastName = new JTextField(10);
+    public static JTextField eDate = new JTextField(10);
+    public static JTextField eTime = new JTextField(10);
+    public static JComboBox empTypes = new JComboBox(eType);
     
     // Used to edit patient
-    private JTextField newPatientFN = new JTextField(10);
-    private JTextField newPatientLN = new JTextField(10);
-    private JTextField newPatientPhone = new JTextField(10); 
+    public static JTextField newPatientFN = new JTextField(10);
+    public static JTextField newPatientLN = new JTextField(10);
+    public static JTextField newPatientPhone = new JTextField(10); 
     
     // Used to create appointment
-    JComboBox docBox;
-    JComboBox timeBox;
+    public static JComboBox docBox;
+    public static JComboBox timeBox;
     
     // Edit appointment
-    private ArrayList<Appointment> editAppt = null;
-    private int changeEditAppointment = 0;
-    JComboBox apptBox = null;
-    private final static String SEARCH = "Search";
-    private String apptDateTimeDoc = null;
+    public static ArrayList<Appointment> editAppt = null;
+    public static int changeEditAppointment = 0;
+    public static JComboBox apptBox = null;
+    public static final String SEARCH = "Search";
+    public static String apptDateTimeDoc = null;
     
     
     SystemGUI(){
@@ -91,29 +91,29 @@ public class SystemGUI {
         prepareGUI();
     }
     
-    private void prepareGUI(){
+    public static void prepareGUI(){
         /*
         This fucntion just sets up the frame
         */
-        mainFrame = null;
-        mainFrame = new JFrame("Lets Go!!");
+        SystemGUI.mainFrame = null;
+        SystemGUI.mainFrame = new JFrame("Lets Go!!");
         
         
         //Setting frame to invisible
-        mainFrame.setVisible(false);
+        SystemGUI.mainFrame.setVisible(false);
         
         Dimension minDimension;
         minDimension = Toolkit.getDefaultToolkit().getScreenSize();
-        //mainFrame.setSize(minDimension);
-        //mainFrame.setMaximumSize(minDimension);
-        //mainFrame.setLayout(new GridLayout(3, 1));
-        //mainFrame.setLayout(new FlowLayout());
-        //mainFrame.setLayout(new BorderLayout());
+        //SystemGUI.mainFrame.setSize(minDimension);
+        //SystemGUI.mainFrame.setMaximumSize(minDimension);
+        //SystemGUI.mainFrame.setLayout(new GridLayout(3, 1));
+        //SystemGUI.mainFrame.setLayout(new FlowLayout());
+        //SystemGUI.mainFrame.setLayout(new BorderLayout());
         
-        //mainFrame.setSize(800,600);
-        //mainFrame.setLayout(new GridLayout(3, 1));
+        //SystemGUI.mainFrame.setSize(800,600);
+        //SystemGUI.mainFrame.setLayout(new GridLayout(3, 1));
         
-        mainFrame.addWindowListener(new WindowAdapter() {
+        SystemGUI.mainFrame.addWindowListener(new WindowAdapter() {
          @Override
          public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
@@ -121,33 +121,33 @@ public class SystemGUI {
         }); 
         
         
-        masterPanel = new JPanel();
-        mainFrame.add(masterPanel);
-        //mainFrame.setVisible(true);
+        SystemGUI.masterPanel = new JPanel();
+        SystemGUI.mainFrame.add(SystemGUI.masterPanel);
+        //SystemGUI.mainFrame.setVisible(true);
     }
     
-    public void killFrame(){
+    public static void killFrame(){
         // This is used to kill the frame
-        mainFrame.setVisible(false);
+        SystemGUI.mainFrame.setVisible(false);
     }
     
-    public void setFrame(){
+    public static void setFrame(){
         // Sets the frame
-        mainFrame.setVisible(true);
+        SystemGUI.mainFrame.setVisible(true);
     }
     
-    public void clearPanel(){
+    public static void clearPanel(){
         // Clears the master panel
-        masterPanel.removeAll();
-        masterPanel.updateUI();
+        SystemGUI.masterPanel.removeAll();
+        SystemGUI.masterPanel.updateUI();
     }
     
-    private void updatePanel(){
+    public static void updatePanel(){
         // Updates the panel
-        masterPanel.updateUI();
+        SystemGUI.masterPanel.updateUI();
     }
     
-    private void clearAllText(){
+    public static void clearAllText(){
         // Clears all the texts
         employeeID.setText("");
         eUserName.setText("");
@@ -219,8 +219,8 @@ public class SystemGUI {
         userNameP4.add(mainLabel);
         mainPanel.add(userNameP4);
         
-        //mainFrame.add(mainPanel);
-        masterPanel.add(mainPanel);
+        //SystemGUI.mainFrame.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -340,7 +340,7 @@ public class SystemGUI {
         mainLabel =  new JLabel("");
         mainPanel.add(mainLabel);
         
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
    
@@ -449,8 +449,8 @@ public class SystemGUI {
         mainLabel = new JLabel("", JLabel.CENTER);
         mainPanel.add(mainLabel);
         
-        //mainFrame.add(mainPanel);
-        //masterPanel.add(mainPanel);
+        //SystemGUI.mainFrame.add(mainPanel);
+        //SystemGUI.masterPanel.add(mainPanel);
         //updatePanel();
         return mainPanel;
          
@@ -575,7 +575,7 @@ public class SystemGUI {
         mainLabel =  new JLabel("");
         mainPanel.add(mainLabel);
         
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     
@@ -701,7 +701,7 @@ public class SystemGUI {
         mainLabel =  new JLabel("");
         mainPanel.add(mainLabel);
         
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -818,7 +818,7 @@ public class SystemGUI {
         mainLabel =  new JLabel("");
         mainPanel.add(mainLabel);
         
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -904,7 +904,7 @@ public class SystemGUI {
         mainLabel =  new JLabel("");
         mainPanel.add(mainLabel);
         
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
         
@@ -1023,7 +1023,7 @@ public class SystemGUI {
         mainPanel.add(mainLabel);
         
         // Add to master panel
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -1127,7 +1127,7 @@ public class SystemGUI {
         mainPanel.add(mainLabel);
         
         // Add to master panel
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -1208,7 +1208,7 @@ public class SystemGUI {
         mainPanel.add(mainLabel);
         
         // Add to master panel
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -1282,7 +1282,7 @@ public class SystemGUI {
         mainPanel.add(mainLabel);
         
         // Add to master panel
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -1355,16 +1355,16 @@ public class SystemGUI {
         mainPanel.add(userNameP);
         
         // setup button
-        JButton update = new JButton("Update");
-        update.addActionListener(new UpdatePatient2());
-        mainPanel.add(update);
+        JButton update1 = new JButton("Update");
+        update1.addActionListener(new UpdatePatient2());
+        mainPanel.add(update1);
         
         // Add main label
         mainLabel = new JLabel("", JLabel.CENTER);
         mainPanel.add(mainLabel);
         
         // Add to master panel
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -1477,7 +1477,7 @@ public class SystemGUI {
         mainPanel.add(mainLabel);
         
         // Add mainPanel to master panel 
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
@@ -1631,7 +1631,7 @@ public class SystemGUI {
         mainPanel.add(mainLabel);
         
         // Add to master panel
-        masterPanel.add(mainPanel);
+        SystemGUI.masterPanel.add(mainPanel);
         updatePanel();
         return mainPanel;
     }
