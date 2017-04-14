@@ -81,6 +81,7 @@ public class SystemGUI {
     
     private LoginPage login =  new LoginPage();
     private EmployeeCreation employeeCreator = new EmployeeCreation();
+    private PatientCreation patientCreator = new PatientCreation();
     
     
     SystemGUI(){
@@ -177,7 +178,6 @@ public class SystemGUI {
     
     public JPanel login(){
         return login.login();
-
     }
     
     public JPanel createEmployee(){
@@ -200,85 +200,10 @@ public class SystemGUI {
         return employeeCreator.createNonMedicalEmployee();
     }
 
-    
     public JPanel createPatient(){
-        // Patient creation GUI is set up here
-        JPanel mainPanel;
-        clearPanel();
-        mainPanel = new JPanel(new GridLayout(5, 1));
-        
-        // setup title
-        JLabel message = new JLabel("Create new Patient", 
-                JLabel.CENTER);
-        
-        message.setFont((new Font("ariel", Font.PLAIN, 24)));
-        mainPanel.add(message);
-        
-        // setup first information panel
-        JPanel panelInfo1 = new JPanel(new GridLayout(1,6));
-        JLabel firstName = new JLabel("First Name", JLabel.CENTER);
-        JLabel lastName = new JLabel("Last Name", JLabel.CENTER);
-        JLabel phone = new JLabel("Phone", JLabel.CENTER);
-        panelInfo1.add(firstName); panelInfo1.add(eFirstName);
-        panelInfo1.add(lastName); panelInfo1.add(eLastName);
-        panelInfo1.add(phone); panelInfo1.add(ePhone);
-        mainPanel.add(panelInfo1);
-        
-        // Setup ok button
-        JButton okButton = new JButton("Ok");
-        okButton.addActionListener(new ActionCreatePatient());
-        mainPanel.add(okButton);
-        
-        /*
-        // Setup back button
-        JButton back = new JButton("Back");
-        back.addActionListener(new BackButton());
-        mainPanel.add(back);
-*/
-        
-        // Setup waring message
-        mainLabel =  new JLabel("");
-        mainPanel.add(mainLabel);
-        
-        SystemGUI.masterPanel.add(mainPanel);
-        updatePanel();
-        return mainPanel;
-        
-        
+        return patientCreator.createPatient();
     }
-    
-    class ActionCreatePatient implements ActionListener{
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if(!eFirstName.getText().equals("") && !eLastName.getText().equals("") && 
-                    !ePhone.getText().equals("")){
-                System.out.println("Create Patient 1");
-                //If all paramaters are entered the code moves foward
-                //mainLabel.setText("Everthing has been entered");
-                if(currentEmployee != null){
-                    //If employees is logged in the code moves forward
-                    Patient tempPatient = new Patient("NA", currentEmployee.eID, 
-                            eFirstName.getText(), eLastName.getText(), 
-                            ePhone.getText(), "NA");
-                    //There might be an issue of clicking the button mutlitple
-                    //time and making the same patient over and over again.
-                    sysSQL.createNewPatient(tempPatient);
-                    
-                    mainLabel.setText("Patient Created");
-                            
-                }
-                else{
-                    mainLabel.setText("Not logged in");
-                }
-            }
-            else{
-                mainLabel.setText("Parameters are missing");
-            }
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        
-    }
     
     public JPanel createAppt(){
         // Sets up GUI to create an appointment
@@ -726,15 +651,7 @@ public class SystemGUI {
         
     }
     
-    public class BackButton implements ActionListener{
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //Add main menu option here
-            
-        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
    
     public JPanel editAppointment(){
         // Sets up edit appointment pannel
