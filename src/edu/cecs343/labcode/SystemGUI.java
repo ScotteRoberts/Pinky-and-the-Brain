@@ -80,8 +80,9 @@ public class SystemGUI {
     public static String apptDateTimeDoc = null;
     
     private LoginPage login =  new LoginPage();
-    private EmployeeCreation employeeCreator = new EmployeeCreation();
+    public EmployeeCreation employeeCreator = new EmployeeCreation();
     private PatientCreation patientCreator = new PatientCreation();
+    
     
     
     SystemGUI(){
@@ -203,6 +204,12 @@ public class SystemGUI {
     public JPanel createPatient(){
         return patientCreator.createPatient();
     }
+    
+    /*
+    public JPanel help(){
+        return help.help();
+    }
+    */
 
     
     public JPanel createAppt(){

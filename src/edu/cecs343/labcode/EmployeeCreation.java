@@ -16,12 +16,30 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class EmployeeCreation {
+    private Employee            localEmployee;
+    private AdminEmployee       localAdmin;
+    private Doctor              localDoctor;
+    private Nurse               localNurse;
+    private NonMedicalEmployee  localNonMedicalEmployee;
+    
+    private final String schduleHours[] = {"NA", "8am-6pm", "8am-12pm", "1pm-6pm"};  
+    private final String daysInWeek[] = {"Monday", "Tuesday", "Wednesday", 
+        "Thrusday", "Friday"};
+    private JComboBox days[] = new JComboBox[7];
+    
+    private int empType;
+    
     
     EmployeeCreation(){
-        
+        for(int i = 0; i < 7; i++){
+            days[i] = new JComboBox(schduleHours);
+        }
     }
     
-        public JPanel createEmployee(){
+    
+    
+    
+    public JPanel createEmployee(){
         /*
         Sets up the GUI which is used to create a doctor
         */
@@ -155,8 +173,8 @@ public class EmployeeCreation {
         account.add(userName);
         account.add(SystemGUI.eUserName);
         account.add(password);
-        account.add(rePassword);
         account.add(SystemGUI.ePassword);
+        account.add(rePassword);
         account.add(SystemGUI.eRePassword);
         mainPanel.add(account);
         //clearAllText();
@@ -196,7 +214,11 @@ public class EmployeeCreation {
                             SystemGUI.eFirstName.getText(), SystemGUI.eLastName.getText(), SystemGUI.ePhone.getText(),
                             "NA", "NA");
                     newAdmin.setPassword((new String(SystemGUI.ePassword.getPassword())).hashCode());
-                    SystemGUI.sysSQL.createAdmin(newAdmin);
+                    localAdmin = newAdmin;
+                    empType = 1;
+                    CalendarHub.clearMasterPanel();
+                    CalendarHub.masterPanel.add(enterSchdule());
+                    //SystemGUI.sysSQL.createAdmin(newAdmin);
                     
                     //login();
                     //LearnGUITest.status = 1;
@@ -330,8 +352,11 @@ public class EmployeeCreation {
                                     SystemGUI.ePhone.getText(), true, SystemGUI.eDegree.getText(),
                                     "NA", SystemGUI.eCollege.getText(), SystemGUI.eLicenseNumber.getText());
                             tempDoctor.setPassword((new String(SystemGUI.eRePassword.getPassword())).hashCode());
-                            SystemGUI.sysSQL.createDoctor(tempDoctor);
-                            SystemGUI.mainLabel.setText("Created");
+                            localDoctor = tempDoctor;
+                            empType = 2;   
+                            CalendarHub.clearMasterPanel();
+                            CalendarHub.masterPanel.add(enterSchdule());
+                            //SystemGUI.mainLabel.setText("Created");
                             return;
                         }
                         else{
@@ -457,7 +482,11 @@ public class EmployeeCreation {
                                     SystemGUI.ePhone.getText(), true, SystemGUI.eDegree.getText(),
                                     "NA", SystemGUI.eCollege.getText(), SystemGUI.eLicenseNumber.getText());
                             tempNurse.setPassword((new String(SystemGUI.eRePassword.getPassword())).hashCode());
-                            SystemGUI.sysSQL.createNurse(tempNurse);
+                            localNurse = tempNurse;
+                            empType = 3;
+                            CalendarHub.clearMasterPanel();
+                            CalendarHub.masterPanel.add(enterSchdule());
+                            
                             SystemGUI.mainLabel.setText("Created");
                             return;
                         }
@@ -569,7 +598,12 @@ public class EmployeeCreation {
                                 SystemGUI.eLastName.getText(), SystemGUI.ePhone.getText(), "NA",
                                 SystemGUI.eTitle.getText());
                         tempNME.setPassword((new String(SystemGUI.ePassword.getPassword())).hashCode());
-                        SystemGUI.sysSQL.createNonMedical(tempNME);
+                        
+                        localNonMedicalEmployee = tempNME;
+                        empType = 4;
+                        CalendarHub.clearMasterPanel();
+                        CalendarHub.masterPanel.add(enterSchdule());
+                        
                     
                         SystemGUI.mainLabel.setText("Created");
                         return;
@@ -585,10 +619,128 @@ public class EmployeeCreation {
             }
             else{
                 SystemGUI.mainLabel.setText("Parameters are missing");
+                
             }
             
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }   
+    }
+    
+    
+    public JPanel enterSchdule(){
+        JPanel mainPanel;
+        SystemGUI.clearPanel();
+        SystemGUI.clearAllText();
+        
+        // setup main mainPanel
+        mainPanel = new JPanel(new GridLayout(9, 1));
+        
+        // setup title
+        JLabel message = new JLabel("Create new Non-Medical", 
+                JLabel.CENTER);
+        
+        message.setFont((new Font("ariel", Font.PLAIN, 24)));
+        mainPanel.add(message);
+        
+        // setup days
+        for(int i = 0; i < 5; i++){
+            JPanel dayPanel = new JPanel(new GridLayout(1, 2));
+            JLabel dayLabel = new JLabel(daysInWeek[i], JLabel.CENTER);
+            dayPanel.add(dayLabel);
+            dayPanel.add(days[i]);
+            mainPanel.add(dayPanel);
+        }
+        
+        // setup button
+        JButton enter = new JButton("Enter");
+        enter.addActionListener(new ActionSchdule());
+        mainPanel.add(enter);
+        
+        // Setup waring message
+        SystemGUI.mainLabel =  new JLabel("");
+        mainPanel.add(SystemGUI.mainLabel);
+        
+        return mainPanel;
+    } 
+    
+    class ActionSchdule implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Employee tempEmp;
+            String value[] = new String[5];
+            int d[] = new int[5];
+            EmployeeSchdule tempSch;
+            
+            for(int i = 0; i < 5; i++){
+                Object o = days[i].getItemAt(days[i].getSelectedIndex());
+                value[i] = new String(o.toString());
+            }
+            
+            for(int i = 0; i < 5; i++){
+                if(value[i].equals(schduleHours[0])){
+                    d[i] = 0;
+                }
+                else if(value[i].equals(schduleHours[1])){
+                    d[i] = 1;
+                }
+                else if(value[i].equals(schduleHours[2])){
+                    d[i] = 2;
+                }
+                else if(value[i].equals(schduleHours[3])){
+                    d[i] = 3;
+                }
+            }
+            
+            tempSch = new EmployeeSchdule(d[0], d[1], d[2], d[3], d[4]);
+            
+            switch(empType){
+                case 0:
+                    tempEmp = null;
+                    break;
+                case 1:
+                    // Set Admin
+                    SystemGUI.sysSQL.createAdmin(localAdmin);
+                    tempEmp = SystemGUI.sysSQL.getEmployee(localAdmin.firstName, localAdmin.lastName,
+                            localAdmin.phone);
+                    localAdmin = null;
+                    break;
+                    
+                case 2:
+                    // Set Doctor
+                    SystemGUI.sysSQL.createDoctor(localDoctor);
+                    tempEmp = SystemGUI.sysSQL.getEmployee(localDoctor.firstName, 
+                            localDoctor.lastName, localDoctor.phone);
+                    localDoctor = null;
+                    break;
+                    
+                case 3:
+                    // Set Nurse
+                    SystemGUI.sysSQL.createNurse(localNurse);
+                    tempEmp = SystemGUI.sysSQL.getEmployee(localNurse.firstName, localNurse.lastName,
+                            localNurse.phone);
+                    localNurse = null;
+                    break;
+                case 4:
+                    SystemGUI.sysSQL.createNonMedical(localNonMedicalEmployee);
+                    tempEmp = SystemGUI.sysSQL.getEmployee(localNonMedicalEmployee.firstName, localNonMedicalEmployee.lastName,
+                            localNonMedicalEmployee.phone);
+                    localNonMedicalEmployee = null;
+                    break;
+                default:
+                    tempEmp = null;
+                    break;
+            }
+            
+            if(tempEmp != null){
+                SystemGUI.sysSQL.addEmployeeSchdule(Integer.parseInt(tempEmp.eID), tempSch);
+            }
+            
+            empType = 0;
+            
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
     }
     
 }

@@ -17,6 +17,9 @@ public class Employee {
     public  String lastName;
     public String phone;
     
+    public EmployeeSchdule schdule;
+    
+    
     Employee(String userNameN, String firstNameN, String lastNameN, String phoneN){
         userName = userNameN;
         firstName = firstNameN;
@@ -35,6 +38,10 @@ public class Employee {
     
     public int getPassword(){
         return password;
+    }
+    
+    public void setEmployeeSchdule(EmployeeSchdule s){
+        schdule = s;
     }
     
     

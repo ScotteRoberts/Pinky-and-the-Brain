@@ -260,6 +260,25 @@ public class SystemSQL {
         
     }
     
+    public void addEmployeeSchdule(int employeeId, EmployeeSchdule es){
+        String sql = "INSERT INTO schedule(employeeID, monday, tuesday, wednesday,"
+                + "thrusday, friday) VALUES(?, ?, ?, ?, ? ,?)";
+        try{
+            prepState = conn.prepareStatement(sql);
+            prepState.setInt(1, employeeId);
+            prepState.setInt(2, es.monday);
+            prepState.setInt(3, es.tuesday);
+            prepState.setInt(4, es.wednesday);
+            prepState.setInt(5, es.thrusday);
+            prepState.setInt(6, es.friday);
+            prepState.executeUpdate();
+            
+        }
+        catch(SQLException se){
+            Logger.getLogger(SystemSQL.class.getName()).log(Level.SEVERE, null, se);
+        }
+    }
+    
     
     // All Keys and unique variables are tested here !!!!
     public boolean testUserName(String userName){
@@ -689,8 +708,8 @@ public class SystemSQL {
                 + "AND phone = ?";
         try{
             prepState = conn.prepareStatement(SQLQuery);
-            prepState.setString(1, employeeFirstName);
-            prepState.setString(2, employeeLastName);
+            prepState.setString(1, employeeFirstName.toUpperCase());
+            prepState.setString(2, employeeLastName.toUpperCase());
             prepState.setString(3, employeePhone);
             rs = prepState.executeQuery();
             if(rs.next()){
