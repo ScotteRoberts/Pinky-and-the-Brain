@@ -662,6 +662,45 @@ public class SystemSQL {
         return null;
     }
     
+    public ArrayList<Appointment> doctorsAppointment(String doctorIDi, 
+            String aDateC, String aTime){
+        /*
+        This returns an ArrayList which contains all appointments at the given
+        date and time
+        */
+        ArrayList<Appointment> a = new ArrayList<Appointment>();
+        Appointment aTemp = null;
+        ResultSet rs = null;
+        String LUASQL = "SELECT * FROM appointment WHERE aDate = ? AND aTime = ?"
+                + " AND doctorID = ?";
+        try{
+            prepState = conn.prepareStatement(LUASQL);
+            prepState.setString(1, aDateC);
+            prepState.setString(2, aTime);
+            prepState.setString(3, doctorIDi);
+            rs = prepState.executeQuery();
+            while(rs.next()){
+                String aID = rs.getString("aID");
+                String patientID = rs.getString("patientID");
+                String employeeID = rs.getString("employeeID");
+                String doctorID = rs.getString("doctorID");
+                aDateC = rs.getString("aDate");
+                aTime = rs.getString("aTime");
+                
+                aTemp = new Appointment(aID, patientID, employeeID, doctorID,
+                    aDateC, aTime);
+                a.add(aTemp);
+                aTemp =  null;
+            }
+            return a;
+        }
+        catch(SQLException se){
+            Logger.getLogger(SystemSQL.class.getName()).log(Level.SEVERE, null, se);
+        }
+        
+        return null;
+    }
+    
     public ArrayList<Appointment> allAppointmentByDate(String date){
         /*
         Returns an ArrayList<Appointment> which contains all the appointment
