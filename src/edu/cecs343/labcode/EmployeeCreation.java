@@ -731,7 +731,7 @@ public class EmployeeCreation {
                     tempEmp = null;
                     break;
             }
-            
+            SystemGUI.mainLabel.setText("Created");
             if(tempEmp != null){
                 SystemGUI.sysSQL.addEmployeeSchdule(Integer.parseInt(tempEmp.eID), tempSch);
             }

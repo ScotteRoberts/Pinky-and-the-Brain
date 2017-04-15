@@ -279,6 +279,34 @@ public class SystemSQL {
         }
     }
     
+    public EmployeeSchdule getEmployeeSchdule(String employeeId){
+        ResultSet rs;
+        EmployeeSchdule tempS;
+        String sql = "SELECT * FROM schedule WHERE employeeID = ?";
+        try{
+            prepState = conn.prepareStatement(sql);
+            prepState.setString(1, employeeId);
+            rs = prepState.executeQuery();
+            if(rs.next() == true){
+                int monday = rs.getInt("monday");
+                int tuesday = rs.getInt("tuesday");
+                int wednesday = rs.getInt("wednesday");
+                int thrusday = rs.getInt("thrusday");
+                int friday = rs.getInt("friday");
+                tempS = new EmployeeSchdule(monday, tuesday, thrusday, wednesday, friday);
+                return tempS;
+            }
+            else{
+                return null;
+            }
+        }
+        catch(SQLException se){
+            Logger.getLogger(SystemSQL.class.getName()).log(Level.SEVERE, null, se);
+        }
+        
+        return null;
+    }
+    
     
     // All Keys and unique variables are tested here !!!!
     public boolean testUserName(String userName){

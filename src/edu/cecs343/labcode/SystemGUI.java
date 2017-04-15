@@ -82,6 +82,7 @@ public class SystemGUI {
     private LoginPage login =  new LoginPage();
     public EmployeeCreation employeeCreator = new EmployeeCreation();
     private PatientCreation patientCreator = new PatientCreation();
+    private AppointmentCreator appointmentCreator =  new AppointmentCreator();
     
     
     
@@ -210,153 +211,156 @@ public class SystemGUI {
         return help.help();
     }
     */
-
-    
     public JPanel createAppt(){
-        // Sets up GUI to create an appointment
-        JPanel mainPanel;
-        clearPanel();
-        
-        String doc[];
-        ArrayList<Employee> e = new ArrayList<Employee>();
-        e = sysSQL.getAllDoctors();
-        
-        if(!e.isEmpty()){
-            doc = new String[e.size()];
-            int i = 0;
-            while(i < e.size()){
-                doc[i] = e.get(i).lastName + ", " + e.get(i).firstName;
-                i++;
-            }
-                
-        }
-        else{
-            doc = new String[1];
-            doc[0] = "None";
-        }
-        
-        String oppTime[] = {"8:00", "8:30", "9:00", "9:30", "10:00", "10:30", "11:00",
-            "11:30", "12:00", "12:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30",
-            "4:00", "4:30", "5:00", "5:30", "6:00"}; 
-        
-        // Set up mainPanel
-        mainPanel = new JPanel(new GridLayout(6,1));
-        
-        // setup title
-        JLabel message = new JLabel("Create new Appointment", 
-                JLabel.CENTER);
-        
-        message.setFont((new Font("ariel", Font.PLAIN, 24)));
-        mainPanel.add(message);
-        
-        // setup patient info
-        // setup first information panel
-        JPanel panelInfo1 = new JPanel(new GridLayout(1,6));
-        JLabel firstName = new JLabel("Patirnt First Name", JLabel.CENTER);
-        JLabel lastName = new JLabel(" Patient Last Name", JLabel.CENTER);
-        JLabel phone = new JLabel("Patient Phone", JLabel.CENTER);
-        panelInfo1.add(firstName); panelInfo1.add(eFirstName);
-        panelInfo1.add(lastName); panelInfo1.add(eLastName);
-        panelInfo1.add(phone); panelInfo1.add(ePhone);
-        mainPanel.add(panelInfo1);
-        
-        
-        // Doctor and date Pannel
-        // setup doctor information
-        JPanel dateTimeDoc = new JPanel(new GridLayout(1,6));
-        JLabel time = new JLabel("Time", JLabel.CENTER);
-        JLabel date = new JLabel("Date", JLabel.CENTER);
-        JLabel dName = new JLabel("Doctors", JLabel.CENTER);
-        timeBox = new JComboBox(oppTime);
-        docBox = new  JComboBox(doc);
-        dateTimeDoc.add(date); dateTimeDoc.add(eDate);
-        dateTimeDoc.add(time);dateTimeDoc.add(timeBox);
-        dateTimeDoc.add(dName); dateTimeDoc.add(docBox);
-        mainPanel.add(dateTimeDoc);
-        
-        // Setup button
-        JButton apptOk = new JButton("Ok");
-        apptOk.addActionListener(new AppointmentCreationHandler());
-        mainPanel.add(apptOk);
-        
-        /*
-        // Setup back button
-        //JButton back = new JButton("Back");
-        //back.addActionListener(new BackButton());
-        //mainPanel.add(back);
-        */
-        
-        // Setup messange
-        mainLabel = new JLabel("", JLabel.CENTER);
-        mainPanel.add(mainLabel);
-        
-        // Add to master panel
-        SystemGUI.masterPanel.add(mainPanel);
-        updatePanel();
-        return mainPanel;
+        return appointmentCreator.createAppt();
     }
-    
-    class AppointmentCreationHandler implements ActionListener{
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            
-            if(!eFirstName.getText().equals("") && !eLastName.getText().equals("") &&
-                    !ePhone.getText().equals("") && !eDate.getText().equals("")){
-                if(currentEmployee != null){
-                    // Test to see if all the parameters are entered
-                    // Get doctors name
-                    Object o = docBox.getItemAt(docBox.getSelectedIndex());
-                    String preDoc = o.toString();
-                    String lastName = preDoc.substring(0, preDoc.indexOf(','));
-                    String firstName  = preDoc.substring(preDoc.indexOf(',')  + 2, preDoc.length());
-                    // Gets time for the comboBox
-                    Object o2 = timeBox.getItemAt(timeBox.getSelectedIndex());
-                    String t = o2.toString() + ":00";
-                    
-                    String dEID = sysSQL.testDoctorName(firstName, lastName);
-                    //String pID =  
-                    if(dEID != null){
-                        System.out.println("Test Appt 1");
-                        if(sysSQL.testAppt(dEID, eDate.getText(), t)){
-                            System.out.println("Test Appt 2");
-                            // If appointment is avalible the code moves forward
-                            ArrayList<Patient> tempP = sysSQL.lookUpPatient(eLastName.getText(), 
-                                    eFirstName.getText(), ePhone.getText());
-                            if(!tempP.isEmpty()){
-                                // If Patient exists the appointment is made
-                                Appointment tempAppt = new Appointment("NA", tempP.get(0).pID,
-                                        currentEmployee.eID, dEID, eDate.getText(),
-                                        t);
-                                sysSQL.makeNewAppointment(tempAppt);
-                                mainLabel.setText("Created");
-                            }
-                            else{
-                                mainLabel.setText("Patient not found");
-                            }
-                        }
-                        else{
-                            mainLabel.setText("Doctor already has appintment at the"
-                                    + " time");
-                        }
-                    }
-                    else{
-                        mainLabel.setText("Doctor does not exist");
-                    }
-                }
-                else{
-                    mainLabel.setText("No one is logged in the system");
-                }
-            }
-            else{
-                mainLabel.setText("Missing paramaters");
-            }
-            
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        
-    }
     
+//    public JPanel createAppt(){
+//        // Sets up GUI to create an appointment
+//        JPanel mainPanel;
+//        clearPanel();
+//        
+//        String doc[];
+//        ArrayList<Employee> e = new ArrayList<Employee>();
+//        e = sysSQL.getAllDoctors();
+//        
+//        if(!e.isEmpty()){
+//            doc = new String[e.size()];
+//            int i = 0;
+//            while(i < e.size()){
+//                doc[i] = e.get(i).lastName + ", " + e.get(i).firstName;
+//                i++;
+//            }
+//                
+//        }
+//        else{
+//            doc = new String[1];
+//            doc[0] = "None";
+//        }
+//        
+//        String oppTime[] = {"8:00", "8:30", "9:00", "9:30", "10:00", "10:30", "11:00",
+//            "11:30", "12:00", "12:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30",
+//            "4:00", "4:30", "5:00", "5:30", "6:00"}; 
+//        
+//        // Set up mainPanel
+//        mainPanel = new JPanel(new GridLayout(6,1));
+//        
+//        // setup title
+//        JLabel message = new JLabel("Create new Appointment", 
+//                JLabel.CENTER);
+//        
+//        message.setFont((new Font("ariel", Font.PLAIN, 24)));
+//        mainPanel.add(message);
+//        
+//        // setup patient info
+//        // setup first information panel
+//        JPanel panelInfo1 = new JPanel(new GridLayout(1,6));
+//        JLabel firstName = new JLabel("Patirnt First Name", JLabel.CENTER);
+//        JLabel lastName = new JLabel(" Patient Last Name", JLabel.CENTER);
+//        JLabel phone = new JLabel("Patient Phone", JLabel.CENTER);
+//        panelInfo1.add(firstName); panelInfo1.add(eFirstName);
+//        panelInfo1.add(lastName); panelInfo1.add(eLastName);
+//        panelInfo1.add(phone); panelInfo1.add(ePhone);
+//        mainPanel.add(panelInfo1);
+//        
+//        
+//        // Doctor and date Pannel
+//        // setup doctor information
+//        JPanel dateTimeDoc = new JPanel(new GridLayout(1,6));
+//        JLabel time = new JLabel("Time", JLabel.CENTER);
+//        JLabel date = new JLabel("Date", JLabel.CENTER);
+//        JLabel dName = new JLabel("Doctors", JLabel.CENTER);
+//        timeBox = new JComboBox(oppTime);
+//        docBox = new  JComboBox(doc);
+//        dateTimeDoc.add(date); dateTimeDoc.add(eDate);
+//        dateTimeDoc.add(time);dateTimeDoc.add(timeBox);
+//        dateTimeDoc.add(dName); dateTimeDoc.add(docBox);
+//        mainPanel.add(dateTimeDoc);
+//        
+//        // Setup button
+//        JButton apptOk = new JButton("Ok");
+//        apptOk.addActionListener(new AppointmentCreationHandler());
+//        mainPanel.add(apptOk);
+//        
+//        /*
+//        // Setup back button
+//        //JButton back = new JButton("Back");
+//        //back.addActionListener(new BackButton());
+//        //mainPanel.add(back);
+//        */
+//        
+//        // Setup messange
+//        mainLabel = new JLabel("", JLabel.CENTER);
+//        mainPanel.add(mainLabel);
+//        
+//        // Add to master panel
+//        SystemGUI.masterPanel.add(mainPanel);
+//        updatePanel();
+//        return mainPanel;
+//    }
+//    
+//    class AppointmentCreationHandler implements ActionListener{
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            
+//            if(!eFirstName.getText().equals("") && !eLastName.getText().equals("") &&
+//                    !ePhone.getText().equals("") && !eDate.getText().equals("")){
+//                if(currentEmployee != null){
+//                    // Test to see if all the parameters are entered
+//                    // Get doctors name
+//                    Object o = docBox.getItemAt(docBox.getSelectedIndex());
+//                    String preDoc = o.toString();
+//                    String lastName = preDoc.substring(0, preDoc.indexOf(','));
+//                    String firstName  = preDoc.substring(preDoc.indexOf(',')  + 2, preDoc.length());
+//                    // Gets time for the comboBox
+//                    Object o2 = timeBox.getItemAt(timeBox.getSelectedIndex());
+//                    String t = o2.toString() + ":00";
+//                    
+//                    String dEID = sysSQL.testDoctorName(firstName, lastName);
+//                    //String pID =  
+//                    if(dEID != null){
+//                        System.out.println("Test Appt 1");
+//                        if(sysSQL.testAppt(dEID, eDate.getText(), t)){
+//                            System.out.println("Test Appt 2");
+//                            // If appointment is avalible the code moves forward
+//                            ArrayList<Patient> tempP = sysSQL.lookUpPatient(eLastName.getText(), 
+//                                    eFirstName.getText(), ePhone.getText());
+//                            if(!tempP.isEmpty()){
+//                                // If Patient exists the appointment is made
+//                                Appointment tempAppt = new Appointment("NA", tempP.get(0).pID,
+//                                        currentEmployee.eID, dEID, eDate.getText(),
+//                                        t);
+//                                sysSQL.makeNewAppointment(tempAppt);
+//                                mainLabel.setText("Created");
+//                            }
+//                            else{
+//                                mainLabel.setText("Patient not found");
+//                            }
+//                        }
+//                        else{
+//                            mainLabel.setText("Doctor already has appintment at the"
+//                                    + " time");
+//                        }
+//                    }
+//                    else{
+//                        mainLabel.setText("Doctor does not exist");
+//                    }
+//                }
+//                else{
+//                    mainLabel.setText("No one is logged in the system");
+//                }
+//            }
+//            else{
+//                mainLabel.setText("Missing paramaters");
+//            }
+//            
+//            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        }
+//        
+//    }
+//    
     public JPanel changePassword(){
         // Changes Password GUI is made here
         JPanel mainPanel;

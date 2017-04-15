@@ -20,4 +20,21 @@ public class EmployeeSchdule {
         friday = eFriday;
     }
     
+    int testDay(int day){
+        // 1 monday, 2 tuesday, 3 thrusday, 4 friday, 5 saturday
+        switch(day){
+            case 1:
+                return monday;
+            case 2:
+                return tuesday;
+            case 3:
+                return wednesday;
+            case 4:
+                return thrusday;
+            case 5:
+                return friday;
+        }
+        return 0;
+    }
+    
 }
