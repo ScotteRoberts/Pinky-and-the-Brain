@@ -24,6 +24,8 @@ public class CalendarHub {
     SystemGUI sysGUI;
     SystemSQL sysSQL;
     CalendarTest cal;
+    Help help = new Help();
+    AppointmentCreator dateStuff;
     //---------------------------------------- Single Jframe
     JFrame frame;
     //----------------------------------- Single MenuBar for home page view
@@ -31,39 +33,29 @@ public class CalendarHub {
     //--------------- Home Menu button to take you to the calendar day view.
     JMenu home;
     JMenuItem homeItem;
+    //----------------------------------------- User Info
+    JMenu userInfo;
+    JMenuItem createUser;
+    JMenuItem editPatient;
+    //----------------------------------------- Account menu and items
+    JMenu account;
+    JMenuItem changeUsername;
+    JMenuItem changePassword;
     //----------------------------------------- Appointments menu and items
     JMenu appointments;
     JMenuItem createAppointment;
     JMenuItem editAppointment;
-    //----------------------------------------- Appointments menu and items
-    JMenu patients;
-    JMenuItem createPatient;
-    JMenuItem editPatient;
-    //----------------------------------------- NonMedicalEmployee menu and items
-    JMenu nonMedicalEmployees;
-    JMenuItem createNonMedicalEmployee;
-    JMenuItem editNonMedicalEmployee;
-    //----------------------------------------- MedicalEmployee menu and items
-    JMenu medicalEmployees;
-    JMenuItem createDoctor;
-    JMenuItem editDoctor;
-    JMenuItem createNurse;
-    JMenuItem editNurse;
-    //----------------------------------------- Admin menu and items
-    JMenu admin;
-    JMenuItem createAdmin;
-    JMenuItem editAdmin;
-    //----------------------------------------- Account menu and items
-    JMenu account;
-    JMenuItem changePassword;
     //----------------------------------------- Calendar Display menu and items
     JMenu calendarDisplay;
     JMenuItem dayDisplay;
         JMenu dayChoice;
-        JTextField calendarDate;
-        JMenuItem calendarDateGo;
+        JComboBox day;
     JMenuItem weekDisplay;
     JMenuItem monthDisplay;
+    //----------------------------------------- Help
+    JMenu helpMenu;
+    JMenuItem helpMenuItem;
+    
     //----------------------------------------- Logout menu (takes to login page)
     JMenu logout;
     JMenuItem logoutItem;
@@ -96,7 +88,7 @@ public class CalendarHub {
         cal = CalendarTest.getInstance();
         sysSQL = new SystemSQL();
         sysGUI = new SystemGUI(this);
-        //sysSQL = new SystemSQL(this);
+        dateStuff = new AppointmentCreator();
         
         //---------------------------------------- Frame
         frame = new JFrame("Pro");
@@ -113,113 +105,82 @@ public class CalendarHub {
         //Home Menu
         home = new JMenu("Home");
         home.setMnemonic(KeyEvent.VK_M);
-        //home.addMenuListener(new HandleHomeMenu());
-        homeItem = new JMenuItem("Home");
-        homeItem.addActionListener(new HandleMenuItem());
-        home.add(homeItem);
+            //Home Menu Item
+            homeItem = new JMenuItem("Home");
+            homeItem.addActionListener(new HandleMenuItem());
+            home.add(homeItem);
         menuBar.add(home);
         
-        //Appointments Menu
-        appointments = new JMenu("Appointments");
-        appointments.setMnemonic(KeyEvent.VK_M);
-        //Appointments Items
-        createAppointment = new JMenuItem("Create Appointment");
-        createAppointment.addActionListener(new HandleMenuItem());
-        appointments.add(createAppointment);
-        editAppointment = new JMenuItem("Edit Appointment");
-        editAppointment.addActionListener(new HandleMenuItem());
-        appointments.add(editAppointment);
-        menuBar.add(appointments);
-        
-        //Patients Menu
-        patients = new JMenu("Patients");
-        patients.setMnemonic(KeyEvent.VK_M);
-        //Patient's Items
-        createPatient = new JMenuItem("Create Patient");
-        createPatient.addActionListener(new HandleMenuItem());
-        patients.add(createPatient);
-        editPatient = new JMenuItem("Edit Patient");
-        editPatient.addActionListener(new HandleMenuItem());
-        patients.add(editPatient);
-        menuBar.add(patients);
-        
-        //Non-MedicalEmployees Menu
-        nonMedicalEmployees = new JMenu("Non-Medical Employees");
-        nonMedicalEmployees.setMnemonic(KeyEvent.VK_M);
-        //Non-MedicalEmployees' Items
-        createNonMedicalEmployee = new JMenuItem("Create Non-Medical Employee");
-        createNonMedicalEmployee.addActionListener(new HandleMenuItem());
-        nonMedicalEmployees.add(createNonMedicalEmployee);
-        //editNonMedicalEmployee = new JMenuItem("Edit Non-Medical Employee");
-        //editNonMedicalEmployee.addActionListener(new HandleMenuItem());
-        //nonMedicalEmployees.add(editNonMedicalEmployee);
-        menuBar.add(nonMedicalEmployees);
-        
-        //MedicalEmployees Menu
-        medicalEmployees = new JMenu("Medical Employees");
-        medicalEmployees.setMnemonic(KeyEvent.VK_M);
-        //MedicalEmployees' Items
-        createDoctor = new JMenuItem("Create Doctor");
-        createDoctor.addActionListener(new HandleMenuItem());
-        medicalEmployees.add(createDoctor);
-        //editDoctor = new JMenuItem("Edit Doctor");
-        //editDoctor.addActionListener(new HandleMenuItem());
-        //medicalEmployees.add(editDoctor);
-        createNurse = new JMenuItem("Create Nurse");
-        createNurse.addActionListener(new HandleMenuItem());
-        medicalEmployees.add(createNurse);
-        //editNurse = new JMenuItem("Edit Nurse");
-        //editNurse.addActionListener(new HandleMenuItem());
-        //medicalEmployees.add(editNurse);
-        menuBar.add(medicalEmployees);
-        
-        //Admin
-        admin = new JMenu("Admin");
-        admin.setMnemonic(KeyEvent.VK_M);
-        //Admin Items
-        createAdmin = new JMenuItem("Create Admin");
-        createAdmin.addActionListener(new HandleMenuItem());
-        admin.add(createAdmin);
-        //editAdmin = new JMenuItem("Edit Admin");
-        //editAdmin.addActionListener(new HandleMenuItem());
-        //admin.add(editAdmin);
-        menuBar.add(admin);
+        //UserInfo
+        userInfo = new JMenu("User Info");
+            //CreateUser
+            createUser = new JMenuItem("Create User");
+            createUser.addActionListener(new HandleMenuItem());
+            userInfo.add(createUser);
+            //EditUser
+            editPatient = new JMenuItem("Edit Patient");
+            editPatient.addActionListener(new HandleMenuItem());
+            userInfo.add(editPatient);
+        menuBar.add(userInfo);
         
         //Account Menu
         account = new JMenu("Account");
         account.setMnemonic(KeyEvent.VK_M);
-        //Account's Items
-        changePassword = new JMenuItem("Change Password");
-        changePassword.addActionListener(new HandleMenuItem());
-        account.add(changePassword);
+            //Account's Items
+            changeUsername = new JMenuItem("Change Username");
+            changeUsername.addActionListener(new HandleMenuItem());
+            account.add(changeUsername);
+            changePassword = new JMenuItem("Change Password");
+            changePassword.addActionListener(new HandleMenuItem());
+            account.add(changePassword);
         menuBar.add(account);
         
         //Appointments Menu
+        appointments = new JMenu("Appointments");
+        appointments.setMnemonic(KeyEvent.VK_M);
+            //Appointments Items
+            createAppointment = new JMenuItem("Create Appointment");
+            createAppointment.addActionListener(new HandleMenuItem());
+            appointments.add(createAppointment);
+            editAppointment = new JMenuItem("Edit Appointment");
+            editAppointment.addActionListener(new HandleMenuItem());
+            appointments.add(editAppointment);
+        menuBar.add(appointments);
+        
+        //Calendar Display Menu
         calendarDisplay = new JMenu("Calendar Display");
         calendarDisplay.setMnemonic(KeyEvent.VK_M);
-        weekDisplay = new JMenuItem("Week Display");
-        weekDisplay.addActionListener(new HandleMenuItem());
-        calendarDisplay.add(weekDisplay);
-        monthDisplay = new JMenuItem("Month Display");
-        monthDisplay.addActionListener(new HandleMenuItem());
-        calendarDisplay.add(monthDisplay);
+            //Day Display
+            dayDisplay = new JMenuItem("Day Display");
+            dayDisplay.addActionListener(new HandleMenuItem());
+            calendarDisplay.add(dayDisplay);
+            //Day Choice Menu
+            dayChoice = new JMenu("Day Choice");
+            dayChoice.setMnemonic(KeyEvent.VK_S);
+            calendarDisplay.add(dayChoice);
+                //Select Date Field
+                day = new JComboBox();
+                day.addActionListener(dateStuff.new MonthSelection());
+                dayChoice.add(day);
+                
+            //Week Display
+            weekDisplay = new JMenuItem("Week Display");
+            weekDisplay.addActionListener(new HandleMenuItem());
+            calendarDisplay.add(weekDisplay);
+            //Month Display
+            monthDisplay = new JMenuItem("Month Display");
+            monthDisplay.addActionListener(new HandleMenuItem());
+            calendarDisplay.add(monthDisplay);
         menuBar.add(calendarDisplay);
-        //Appointments Items
-        dayDisplay = new JMenuItem("Day Display");
-        dayDisplay.addActionListener(new HandleMenuItem());
-        calendarDisplay.add(dayDisplay);
         
-        //Day Menu
-        calendarDisplay.addSeparator();
-        dayChoice = new JMenu("Day Choice");
-        dayChoice.setMnemonic(KeyEvent.VK_S);
-        calendarDisplay.add(dayChoice);
-        calendarDate = new JTextField(10);
-        dayChoice.add(calendarDate);
-        calendarDateGo = new JMenuItem("Go");
-        calendarDateGo.addActionListener(new HandleMenuItem());
-        dayChoice.add(calendarDateGo);
-
+        //Help Menu
+        helpMenu = new JMenu("Help");
+            //HelpMenuItem
+            helpMenuItem = new JMenuItem("Help");
+            helpMenuItem.addActionListener(new HandleMenuItem());
+            helpMenu.add(helpMenuItem);
+        menuBar.add(helpMenu);
+            
         //Right Justified
         menuBar.add(Box.createGlue());
        
@@ -244,7 +205,6 @@ public class CalendarHub {
         masterPanel = new JPanel();
         //masterPanel.setBackground(Color.LIGHT_GRAY);
         calendarInfoPanel = new JPanel();
-        calendarInfoPanel.setBackground(Color.white);
         calendarInfoPanel.setLayout(new GridLayout(2,1));
         
         //This label exists on each Employee Panel, but is only visible when
@@ -275,11 +235,14 @@ public class CalendarHub {
         tempPanel1.setBackground(Color.white);
         tempPanel3.setLayout(new GridLayout(5,7));
         displayMonthCalendar();
+        //this is a comment
+        
           
     }
     
     public void pullDayQueries(String date)
     {
+        calendarDisplayInfo.setText("Day View: " + date);
         clearPanel(tempPanel1);
         ArrayList<Appointment> appts;
         appts = sysSQL.allAppointmentByDate(date);
@@ -305,6 +268,14 @@ public class CalendarHub {
         
     }
     
+    class HandleDayChoiceComboBox implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    }
+    
     public void pullWeekQueries()
     {
         for (int i = 0; i <100; i++)
@@ -313,6 +284,9 @@ public class CalendarHub {
             tempPanel2.add(new JLabel ("# of Appointments", JLabel.CENTER));
         }
     }
+    
+    
+    
     
     public void displayMonthCalendar()
     {
@@ -327,8 +301,33 @@ public class CalendarHub {
         }
         for (int i = 1; i <= cal.daysInMonth[cal.month]; i++)
         {
-            tempPanel3.add(new JLabel("" + i, JLabel.CENTER));
+            
+            CalendarButton tempButton = new CalendarButton(i, cal.month+1+"/"+i+"/"+cal.year);
+            tempButton.addActionListener(new HandleCalendarButton());
+            tempPanel3.add(tempButton);
+            
         }
+    }
+    class CalendarButton extends JButton
+    {
+        String date;
+        CalendarButton(int day, String d)
+        {
+            super("" + day);
+            date = d;
+        }
+        
+    }
+    public class HandleCalendarButton implements ActionListener
+    {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CalendarButton button = (CalendarButton) e.getSource();
+                clearMasterPanel();
+                currentDisplay = 1;
+                pullDayQueries(button.date);
+                setVisibleHomePanel(currentEmployee, currentDisplay);
+            }
     }
     
     public static CalendarHub getInstance()
@@ -370,40 +369,26 @@ public class CalendarHub {
             System.out.println("Selected: " + command);
             if(command.equals("Home"))
                 setHomePanel();
+            if(command.equals("Create User"))
+                setCreateUserPanel();
+            if(command.equals("Edit Patient"))
+                setEditPatientPanel();
+            if(command.equals("Change Username"))
+                setChangeUsernamePanel();
+            if(command.equals("Change Password"))
+                setChangePasswordPanel();
             if(command.equals("Create Appointment"))
                 setCreateAppointmentPanel();
             if(command.equals("Edit Appointment"))
                 setEditAppointmentPanel();
-            if(command.equals("Create Patient"))
-                setCreatePatientPanel();
-            if(command.equals("Edit Patient"))
-                setEditPatientPanel();
-            if(command.equals("Create Non-Medical Employee"))
-                setCreateNonMedicalEmployeePanel();
-            if(command.equals("Edit Non-Medical Employee"))
-                setEditNonMedicalEmployeePanel();
-            if(command.equals("Create Doctor"))
-                setCreateDoctorPanel();
-            if(command.equals("Edit Doctor"))
-                setEditDoctorPanel();
-            if(command.equals("Create Nurse"))
-                setCreateNursePanel();
-            if(command.equals("Edit Nurse"))
-                setEditNursePanel();
-            if(command.equals("Create Admin"))
-                setCreateAdminPanel();
-            if(command.equals("Edit Admin"))
-                setEditAdminPanel();
-            if(command.equals("Change Password"))
-                setChangePasswordPanel();
             if(command.equals("Day Display"))
                 changeToDayDisplay();
-            if(command.equals("Go"))
-                setDayDisplay();
             if(command.equals("Week Display"))
                 changeToWeekDisplay();
             if(command.equals("Month Display"))
                 changeToMonthDisplay();
+            if(command.equals("Help"))
+                setHelpDisplay();
             if(command.equals("Logout"))
                 setLogin();     
         } 
@@ -415,6 +400,26 @@ public class CalendarHub {
         pullDayQueries(cal.getDay());
         setVisibleHomePanel(currentEmployee, currentDisplay);
     }
+    void setCreateUserPanel()
+    {
+        clearMasterPanel();
+        masterPanel.add(sysGUI.createEmployee());
+    }
+    void setEditPatientPanel()
+    {
+        clearMasterPanel();
+        masterPanel.add(sysGUI.updatePatient());
+    }
+    void setChangeUsernamePanel()
+    {
+        clearMasterPanel();
+        masterPanel.add(sysGUI.editUserName());
+    }
+    void setChangePasswordPanel()
+    {
+        clearMasterPanel();
+        masterPanel.add(sysGUI.changePassword());
+    }            
     void setCreateAppointmentPanel()
     {
         clearMasterPanel();
@@ -424,61 +429,6 @@ public class CalendarHub {
     {
         clearMasterPanel();
         masterPanel.add(sysGUI.editAppointment());
-    }
-    void setCreatePatientPanel()
-    {
-        clearMasterPanel();
-        masterPanel.add(sysGUI.createPatient());
-    }
-    void setEditPatientPanel()
-    {
-        clearMasterPanel();
-        masterPanel.add(sysGUI.updatePatient());
-    }
-    void setCreateNonMedicalEmployeePanel()
-    {
-        clearMasterPanel();
-        masterPanel.add(sysGUI.createNonMedicalEmployee());
-    }
-    void setEditNonMedicalEmployeePanel()
-    {
-        clearMasterPanel();
-        //masterPanel.add(sysGUI.editNonMedicalEmployee());
-    }
-    void setCreateDoctorPanel()
-    {
-        clearMasterPanel();
-        masterPanel.add(sysGUI.createDoctor());
-    }
-    void setEditDoctorPanel()
-    {
-        clearMasterPanel();
-        //masterPanel.add(sysGUI.editDoctor());
-    }
-    void setCreateNursePanel()
-    {
-        clearMasterPanel();
-        masterPanel.add(sysGUI.createNurse());
-    }
-    void setEditNursePanel()
-    {
-        clearMasterPanel();
-        //masterPanel.add(sysGUI.editNurse());
-    }
-    void setCreateAdminPanel()
-    {
-        clearMasterPanel();
-        masterPanel.add(sysGUI.makeAdminAccount());
-    }
-    void setEditAdminPanel()
-    {
-        clearMasterPanel();
-        //masterPanel.add(sysGUI.editAdminAccount());
-    }
-    void setChangePasswordPanel()
-    {
-        clearMasterPanel();
-        masterPanel.add(sysGUI.changePassword());
     }
     void changeToDayDisplay()
     {
@@ -490,7 +440,7 @@ public class CalendarHub {
     {
         clearMasterPanel();
         currentDisplay = 1;
-        pullDayQueries(calendarDate.getText());
+        //pullDayQueries();
         setVisibleHomePanel(currentEmployee, currentDisplay);
     }
     void changeToWeekDisplay()
@@ -504,6 +454,12 @@ public class CalendarHub {
         clearMasterPanel();
         currentDisplay = 3;
         setVisibleHomePanel(currentEmployee, currentDisplay);
+    }
+    void setHelpDisplay()
+    {
+        clearMasterPanel();
+        //_____________________________________________Change this to sysGUI
+        masterPanel.add(help.help());
     }
     //-------------------------------------------- Default Panel
     void setLogin()
@@ -520,40 +476,24 @@ public class CalendarHub {
     {
         clearMasterPanel();
         menuBar.setVisible(true);
+            home.setVisible(true);
+            userInfo.setVisible(true);
+            account.setVisible(true);
+            appointments.setVisible(true);
+            calendarDisplay.setVisible(true);
         switch (menuAccess)
         {
             //Admin
             case 1:
-                home.setVisible(true);
-                appointments.setVisible(true);
-                patients.setVisible(false);
-                nonMedicalEmployees.setVisible(true);
-                medicalEmployees.setVisible(true);
-                admin.setVisible(true);
-                account.setVisible(true);
-                calendarDisplay.setVisible(true);
+                
                 break;
             //Medical Employee
             case 2:
-                home.setVisible(true);
-                appointments.setVisible(true);
-                patients.setVisible(true);
-                nonMedicalEmployees.setVisible(false);
-                medicalEmployees.setVisible(false);
-                admin.setVisible(false);
-                account.setVisible(true);
-                calendarDisplay.setVisible(true);
+                
                 break;
             //Non-Medical Employee
             case 3:
-                home.setVisible(true);
-                appointments.setVisible(true);
-                patients.setVisible(false);
-                nonMedicalEmployees.setVisible(false);
-                medicalEmployees.setVisible(false);
-                admin.setVisible(false);
-                account.setVisible(true);
-                calendarDisplay.setVisible(true);
+                
                 break;
         }
         switch(calendarType)
@@ -568,7 +508,7 @@ public class CalendarHub {
                 daysOfWeek.setVisible(false);
                 //pullDayQueries();
                 dayCalendarPane = new JScrollPane(tempPanel1);
-                calendarDisplayInfo.setText("Day View: " + cal.getDay());
+                
                 dayCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                 dayCalendarPane.setBounds(0, 0, 1200, 600);
                 contentPanel = new JPanel(null);
