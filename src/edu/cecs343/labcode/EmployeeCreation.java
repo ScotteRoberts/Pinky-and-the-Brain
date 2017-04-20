@@ -140,7 +140,7 @@ public class EmployeeCreation {
         */
         JPanel mainPanel;
         SystemGUI.clearPanel();
-        SystemGUI.clearAllText();
+        //SystemGUI.clearAllText();
         
         // This panel creates an admin
         mainPanel = new JPanel(new GridLayout(5,1));
@@ -253,7 +253,7 @@ public class EmployeeCreation {
         */
         JPanel mainPanel;
         SystemGUI.clearPanel();
-        SystemGUI.clearAllText();
+        //SystemGUI.clearAllText();
         
         // setup main mainPanel
         mainPanel = new JPanel(new GridLayout(9, 1));
@@ -384,7 +384,7 @@ public class EmployeeCreation {
         // This generates gui to create a Nurse
         JPanel mainPanel;
         SystemGUI.clearPanel();
-        SystemGUI.clearAllText();
+        //SystemGUI.clearAllText();
         
         // setup main mainPanel
         mainPanel = new JPanel(new GridLayout(9, 1));
@@ -515,7 +515,7 @@ public class EmployeeCreation {
         // Sets up GUI to create nonMedicalEmployee
         JPanel mainPanel;
         SystemGUI.clearPanel();
-        SystemGUI.clearAllText();
+        //SystemGUI.clearAllText();
         
         // setup main mainPanel
         mainPanel = new JPanel(new GridLayout(8, 1));
