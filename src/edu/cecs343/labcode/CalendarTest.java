@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.lang.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 /**
  * Calendar class designed for the text-based prototype in Software Engineering
  * 341 group project
@@ -18,7 +20,7 @@ public class CalendarTest{
     //The program stays open. We don't want to rerun the
     //program to constantly keep time consistant.
     Calendar cal;
-    Date date;
+    
     private static CalendarTest instance = null;
     int[] hoursInDay = {8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
     int[] minuteSegments = {00, 30, 60};
@@ -31,9 +33,9 @@ public class CalendarTest{
     int minute;
     int second;
     int weekYear;
-    int dayOfMonth;
     int dayOfWeek;
     int weekOfMonth;
+    String currentDate;
     
     private CalendarTest()
     {
@@ -45,10 +47,9 @@ public class CalendarTest{
       minute = cal.get(Calendar.MINUTE);
       second = cal.get(Calendar.SECOND);
       weekYear = cal.get(Calendar.WEEK_OF_YEAR);
-      dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
       dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
       weekOfMonth = cal.get(Calendar.WEEK_OF_MONTH);
-      
+      currentDate = "" + (month+1) + "/" + day + "/" + year;
     }
     
     public static CalendarTest getInstance()
@@ -64,18 +65,176 @@ public class CalendarTest{
     {
         return "" + (month + 1) + "/" + day + "/" + year;
     }
+    public String getDay(int firstDay)
+    {
+        return "" + (month + 1) + "/" + firstDay + "/" + year;
+    }
     
-    public String getWeek()
+    public String[] getDaysOfWeek()
+    {
+        String[] daysOfWeek = new String[7];
+        int weekStart = getFirstDayOfWeek();
+        for (int i = 0; i < 7; i++)
+        {
+            daysOfWeek[i] = getDay(weekStart);
+            weekStart++;
+        }
+        return daysOfWeek;
+    }
+    public String getWeekRange()
     {
         int weekStart = getFirstDayOfWeek();
         int weekFinish = getLastDayOfWeek();
         return "" + (month + 1) + "/" + weekStart + " - " + (month + 1) + "/" + weekFinish;
     }
     
+    public int getFirstDayOfWeek()
+    {
+        int firstDay;
+        if (day > dayOfWeek)
+            firstDay = day - dayOfWeek + 1;
+        else
+            firstDay = dayOfWeek - day + 1;
+        return firstDay;
+    }
+    
+    public int getLastDayOfWeek()
+    {
+        int lastDay;
+        if (day > 24)
+            lastDay = daysInMonth[month];
+        else
+            lastDay = 7 - dayOfWeek + day; 
+        return lastDay;
+        
+    }
+    /*
+    public void incrementWeekRange() throws ParseException
+    {   
+        String test[] = getDaysOfWeek();
+        String firstDay = test[0];
+        int index = firstDay.indexOf("/");
+        int pMonth = Integer.parseInt(firstDay.substring(0, index));
+        firstDay = firstDay.substring(index + 1, firstDay.length());
+        index = firstDay.indexOf("/");
+        int pDay = Integer.parseInt(firstDay.substring(0, index));
+        
+        if((pDay + 7) > daysInMonth[pMonth - 1]){
+            pMonth++;
+            pDay = pDay - daysInMonth[pMonth - 1] + 7;
+            String send = pDay + "/" + pMonth + "/2017";
+            updateCal(send);
+        }
+        else{
+            pDay += 7;
+            String send = pDay + "/" + pMonth + "/2017";
+            updateCal(send);
+        }
+        
+        
+
+    }
+    
+    private void updateCal(String date) throws ParseException{
+        //new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
+        cal.setTime(new SimpleDateFormat("dd/M/yyyy").parse(date));
+        updateParams();
+        
+    }
+    
+    
+    private void updateParams(){
+      year = cal.get(Calendar.YEAR);
+      month = cal.get(Calendar.MONTH);      // 0 to 11
+      day = cal.get(Calendar.DAY_OF_MONTH);
+      hour = cal.get(Calendar.HOUR_OF_DAY);
+      minute = cal.get(Calendar.MINUTE);
+      second = cal.get(Calendar.SECOND);
+      weekYear = cal.get(Calendar.WEEK_OF_YEAR);
+      dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+      weekOfMonth = cal.get(Calendar.WEEK_OF_MONTH);
+      currentDate = "" + (month+1) + "/" + day + "/" + year;
+    }
+    */
+    
+    public String incrementWeekRange()
+    {   String test[] = getDaysOfWeek();
+        
+        if ((day+7) <= daysInMonth[month])
+        {
+            day+=7;
+            weekYear++;
+            //weekOfMonth++;
+            currentDate = getDay();
+        }
+        else
+        {
+
+            day = (day+7) - daysInMonth[month];
+            month++;
+            weekYear++;
+            //weekOfMonth = 1;
+            currentDate = getDay();
+        }
+        
+        return getWeekRange(); 
+    }
+    
+    
+    public String decrementWeekRange()
+    {
+        if (day-7 > 0)
+        {
+            day-=7;
+            weekYear--;
+            //weekOfMonth--;
+            currentDate = getDay();
+        }
+        else
+        {
+            month--;
+            day = (day-7) + daysInMonth[month];
+            weekYear--;
+            //weekOfMonth = ;
+            currentDate = getDay();
+        }
+        return getWeekRange();
+    }
+    
     public String getMonth()
     {
         return (month + 1) + "/" + year;
     }
+    
+    public String incrementMonth()
+    {
+        if(month+1 < 11)
+        {
+            month++;
+        }
+        else
+        {
+            month = 0;
+            year++;
+        }
+        return getMonth();
+    }
+    
+    public String decrementMonth()
+    {
+        if (month - 1 >= 0)
+        {
+            month--;
+        }
+        else
+        {
+            month = 11;
+            year--;
+        }
+        return getMonth();
+    }
+    
+    
     
     public void displayDay()
     {
@@ -97,35 +256,6 @@ public class CalendarTest{
             }
             
         }
-        
-    }
-    
-    public int getFirstDayOfWeek()
-    {
-        int tempDay;
-        if (day > dayOfWeek)
-        {
-            tempDay = day - dayOfWeek + 1;
-        }
-        else
-        {
-            tempDay = dayOfWeek - day + 1;
-        }
-        return tempDay;
-    }
-    
-    public int getLastDayOfWeek()
-    {
-        int tempDay;
-        if (day > 24)
-        {
-            tempDay = daysInMonth[month];
-        }
-        else
-        {
-            tempDay = 7 - dayOfWeek + day; 
-        }
-        return tempDay;
         
     }
     
@@ -210,9 +340,40 @@ public class CalendarTest{
         */
     }
     
+    
+    
     public static void main (String[] args)
     {
+        
         CalendarTest calTest = new CalendarTest();
+        System.out.println(calTest.getDay());
+        //calTest.incrementWeekRange();
+        System.out.println(calTest.getDay());
+        //calTest.incrementWeekRange();
+        System.out.println(calTest.getDay());
+        //calTest.incrementWeekRange();
+        System.out.println(calTest.getDay());
+        calTest.decrementWeekRange();
+        System.out.println(calTest.getDay());
+        calTest.decrementWeekRange();
+        System.out.println(calTest.getDay());
+        calTest.decrementWeekRange();
+        System.out.println(calTest.getDay());
+        calTest.decrementMonth();
+        System.out.println(calTest.getDay());
+        calTest.decrementMonth();
+        System.out.println(calTest.getDay());
+        calTest.decrementMonth();
+        System.out.println(calTest.getDay());
+        calTest.decrementMonth();
+        
+        //Days Of Week
+        String[] daysOfWeek = calTest.getDaysOfWeek();
+        for(int i = 0; i < 7; i++)
+        {
+            System.out.println(daysOfWeek[i]);
+        }
+        calTest.decrementMonth();
         calTest.displayDay();
         calTest.displayWeek();
         calTest.displayMonth();

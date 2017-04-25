@@ -10,31 +10,26 @@ package edu.cecs343.labcode;
  * @author ahmedarbi
  */
 public class EmployeeSchdule {
-    public int monday, tuesday, wednesday, thrusday, friday;
+    public String mondayStart, mondayEnd, tuesdayStart, tuesdayEnd,
+            wednesdayStart, wednesdayEnd, thrusdayStart, thrusdayEnd, 
+            fridayStart, fridayEnd;
     
-    EmployeeSchdule(int eMonday, int eTuesday, int eWednesday, int eThrusday, int eFriday){
-        monday = eMonday;
-        tuesday = eTuesday;
-        wednesday = eWednesday;
-        thrusday = eThrusday;
-        friday = eFriday;
+    EmployeeSchdule(String eMondayStart, String eMondayEnd, String eTuesdayStart,
+            String eTuesdayEnd, String eWednesdayStart, String eWednesdayEnd,
+            String eThrusdayStart, String eThrusdayEnd, String eFridayStart, 
+            String eFridayEnd){
+        mondayStart = eMondayStart;
+        mondayEnd = eMondayEnd;
+        tuesdayStart = eTuesdayStart;
+        tuesdayEnd = eTuesdayEnd;
+        wednesdayStart = eWednesdayStart;
+        wednesdayEnd = eWednesdayEnd;
+        thrusdayStart = eThrusdayStart;
+        thrusdayEnd = eThrusdayEnd;
+        fridayStart = eFridayStart;
+        fridayEnd = eFridayEnd;
     }
     
-    int testDay(int day){
-        // 1 monday, 2 tuesday, 3 thrusday, 4 friday, 5 saturday
-        switch(day){
-            case 1:
-                return monday;
-            case 2:
-                return tuesday;
-            case 3:
-                return wednesday;
-            case 4:
-                return thrusday;
-            case 5:
-                return friday;
-        }
-        return 0;
-    }
+    
     
 }

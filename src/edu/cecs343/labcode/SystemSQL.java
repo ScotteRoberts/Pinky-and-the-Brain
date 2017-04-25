@@ -261,16 +261,23 @@ public class SystemSQL {
     }
     
     public void addEmployeeSchdule(int employeeId, EmployeeSchdule es){
-        String sql = "INSERT INTO schedule(employeeID, monday, tuesday, wednesday,"
-                + "thrusday, friday) VALUES(?, ?, ?, ?, ? ,?)";
+        String sql = "INSERT INTO schedule(employeeID, mondayStart, mondayEnd,"
+                + " tuesdayStart, tuesdayEnd, wednesdayStart, wednesdayEnd,"
+                + "thrusdayStart, thrusdayEnd, fridayStart, fridayEnd) "
+                + "VALUES(?, ?, ?, ?, ? ,? , ?, ?, ?, ?, ? )";
         try{
             prepState = conn.prepareStatement(sql);
             prepState.setInt(1, employeeId);
-            prepState.setInt(2, es.monday);
-            prepState.setInt(3, es.tuesday);
-            prepState.setInt(4, es.wednesday);
-            prepState.setInt(5, es.thrusday);
-            prepState.setInt(6, es.friday);
+            prepState.setString(2, es.mondayStart);
+            prepState.setString(3, es.mondayEnd);
+            prepState.setString(4, es.tuesdayStart);
+            prepState.setString(5, es.tuesdayEnd);
+            prepState.setString(6, es.wednesdayStart);
+            prepState.setString(7, es.wednesdayEnd);
+            prepState.setString(8, es.thrusdayStart);
+            prepState.setString(9, es.tuesdayEnd);
+            prepState.setString(10, es.fridayStart);
+            prepState.setString(11, es.fridayEnd);
             prepState.executeUpdate();
             
         }
@@ -288,12 +295,19 @@ public class SystemSQL {
             prepState.setString(1, employeeId);
             rs = prepState.executeQuery();
             if(rs.next() == true){
-                int monday = rs.getInt("monday");
-                int tuesday = rs.getInt("tuesday");
-                int wednesday = rs.getInt("wednesday");
-                int thrusday = rs.getInt("thrusday");
-                int friday = rs.getInt("friday");
-                tempS = new EmployeeSchdule(monday, tuesday, thrusday, wednesday, friday);
+                String mondayStart = rs.getString("mondayStart");
+                String mondayEnd   = rs.getString("mondayEnd");
+                String tuesdayStart = rs.getString("tuesdayStart");
+                String tuesdayEnd = rs.getString("tuesdayEnd");
+                String wednesdayStart = rs.getString("wednesdayStart");
+                String wednesdayEnd   = rs.getString("wednesdayEnd");
+                String thrusdayStart = rs.getString("thrusdayStart");
+                String thrusdayEnd = rs.getString("thrusdayEnd");
+                String fridayStart = rs.getString("fridayStart");
+                String fridayEnd    = rs.getString("fridayEnd");
+                tempS = new EmployeeSchdule(mondayStart, mondayEnd, tuesdayStart, tuesdayEnd,
+                        wednesdayStart, wednesdayEnd, thrusdayStart, thrusdayEnd,  
+                        fridayStart, fridayEnd);
                 return tempS;
             }
             else{

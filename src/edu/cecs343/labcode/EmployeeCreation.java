@@ -22,17 +22,27 @@ public class EmployeeCreation {
     private Nurse               localNurse;
     private NonMedicalEmployee  localNonMedicalEmployee;
     
-    private final String schduleHours[] = {"NA", "8am-6pm", "8am-12pm", "1pm-6pm"};  
+    //private final String schduleHours[] = {"NA", "8am-6pm", "8am-12pm", "1pm-6pm"};  
     private final String daysInWeek[] = {"Monday", "Tuesday", "Wednesday", 
         "Thrusday", "Friday"};
-    private JComboBox days[] = new JComboBox[7];
-    
+    private final String amPm[] = {"am", "pm"};
+    String oppTime[] = {"8:00", "8:30", "9:00", "9:30", "10:00", "10:30", "11:00",
+            "11:30", "12:00", "12:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30",
+            "4:00", "4:30", "5:00", "5:30", "6:00"}; 
+    private JComboBox startTime[] = new JComboBox[7];
+    private JComboBox startAmPm[] = new JComboBox[7];
+    private JComboBox endTime[] = new JComboBox[7];
+    private JComboBox endAmPm[] = new JComboBox[7];
     private int empType;
     
     
     EmployeeCreation(){
         for(int i = 0; i < 7; i++){
-            days[i] = new JComboBox(schduleHours);
+            startTime[i] = new JComboBox(oppTime);
+            endTime[i] = new JComboBox(oppTime);
+            startAmPm[i] = new JComboBox(amPm);
+            endAmPm[i] = new JComboBox(amPm);
+            
         }
     }
     
@@ -636,7 +646,7 @@ public class EmployeeCreation {
         mainPanel = new JPanel(new GridLayout(9, 1));
         
         // setup title
-        JLabel message = new JLabel("Create new Non-Medical", 
+        JLabel message = new JLabel("Create schudle", 
                 JLabel.CENTER);
         
         message.setFont((new Font("ariel", Font.PLAIN, 24)));
@@ -644,10 +654,16 @@ public class EmployeeCreation {
         
         // setup days
         for(int i = 0; i < 5; i++){
-            JPanel dayPanel = new JPanel(new GridLayout(1, 2));
+            JPanel dayPanel = new JPanel(new GridLayout(1, 8));
             JLabel dayLabel = new JLabel(daysInWeek[i], JLabel.CENTER);
             dayPanel.add(dayLabel);
-            dayPanel.add(days[i]);
+            dayPanel.add(new JLabel("Start Time", JLabel.CENTER));
+            dayPanel.add(startTime[i]);
+            dayPanel.add(startAmPm[i]);
+            dayPanel.add(new JLabel("End Time", JLabel.CENTER));
+            dayPanel.add(endTime[i]);
+            dayPanel.add(endAmPm[i]);
+            //dayPanel.add(days[i]);
             mainPanel.add(dayPanel);
         }
         
@@ -663,84 +679,136 @@ public class EmployeeCreation {
         return mainPanel;
     } 
     
-    class ActionSchdule implements ActionListener{
+   class ActionSchdule implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
+
+            String sTime[] = new String[5];
+            String eTime[] = new String[5];
+            String sAmPm[] = new String[5];
+            String eAmPm[] = new String[5];
             Employee tempEmp;
-            String value[] = new String[5];
-            int d[] = new int[5];
-            EmployeeSchdule tempSch;
+            EmployeeSchdule es;
+            boolean timeTrue = true;
             
             for(int i = 0; i < 5; i++){
-                Object o = days[i].getItemAt(days[i].getSelectedIndex());
-                value[i] = new String(o.toString());
+                Object o = startTime[i].getItemAt(startTime[i].getSelectedIndex());
+                sTime[i] = new String(o.toString());
+                o = startAmPm[i].getItemAt(startAmPm[i].getSelectedIndex());
+                sAmPm[i] = new String(o.toString());
+                o = endTime[i].getItemAt(endTime[i].getSelectedIndex());
+                eTime[i] = new String(o.toString());
+                o = endAmPm[i].getItemAt(endAmPm[i].getSelectedIndex());
+                eAmPm[i] = new String(o.toString());
             }
             
+            timeTrue = true;
             for(int i = 0; i < 5; i++){
-                if(value[i].equals(schduleHours[0])){
-                    d[i] = 0;
+                int trueRange = testTimeRange(sTime[i], sAmPm[i], eTime[i], eAmPm[i]);
+                if(trueRange == 0){
+                    timeTrue = false;
                 }
-                else if(value[i].equals(schduleHours[1])){
-                    d[i] = 1;
-                }
-                else if(value[i].equals(schduleHours[2])){
-                    d[i] = 2;
-                }
-                else if(value[i].equals(schduleHours[3])){
-                    d[i] = 3;
+                else if(trueRange == -1){
+                    timeTrue = false;
                 }
             }
-            
-            tempSch = new EmployeeSchdule(d[0], d[1], d[2], d[3], d[4]);
-            
-            switch(empType){
-                case 0:
-                    tempEmp = null;
-                    break;
-                case 1:
-                    // Set Admin
-                    SystemGUI.sysSQL.createAdmin(localAdmin);
-                    tempEmp = SystemGUI.sysSQL.getEmployee(localAdmin.firstName, localAdmin.lastName,
-                            localAdmin.phone);
-                    localAdmin = null;
-                    break;
-                    
-                case 2:
-                    // Set Doctor
-                    SystemGUI.sysSQL.createDoctor(localDoctor);
-                    tempEmp = SystemGUI.sysSQL.getEmployee(localDoctor.firstName, 
-                            localDoctor.lastName, localDoctor.phone);
-                    localDoctor = null;
-                    break;
-                    
-                case 3:
-                    // Set Nurse
-                    SystemGUI.sysSQL.createNurse(localNurse);
-                    tempEmp = SystemGUI.sysSQL.getEmployee(localNurse.firstName, localNurse.lastName,
-                            localNurse.phone);
-                    localNurse = null;
-                    break;
-                case 4:
-                    SystemGUI.sysSQL.createNonMedical(localNonMedicalEmployee);
-                    tempEmp = SystemGUI.sysSQL.getEmployee(localNonMedicalEmployee.firstName, localNonMedicalEmployee.lastName,
-                            localNonMedicalEmployee.phone);
-                    localNonMedicalEmployee = null;
-                    break;
-                default:
-                    tempEmp = null;
-                    break;
+                
+            if(timeTrue){
+                es = new EmployeeSchdule(sTime[0], eTime[0], sTime[1], eTime[1], sTime[2],
+                eTime[2], sTime[3], eTime[3], sTime[4], eTime[4]);
+                switch(empType){
+                    case 0:
+                        tempEmp = null;
+                        break;
+                    case 1:
+                        // Set Admin
+                        SystemGUI.sysSQL.createAdmin(localAdmin);
+                        tempEmp = SystemGUI.sysSQL.getEmployee(localAdmin.firstName, 
+                                localAdmin.lastName, localAdmin.phone);
+                        localAdmin = null;
+                        break;
+
+                    case 2:
+                        // Set Doctor
+                        SystemGUI.sysSQL.createDoctor(localDoctor);
+                        tempEmp = SystemGUI.sysSQL.getEmployee(localDoctor.firstName, 
+                                localDoctor.lastName, localDoctor.phone);
+                        localDoctor = null;
+                        break;
+
+                    case 3:
+                        // Set Nurse
+                        SystemGUI.sysSQL.createNurse(localNurse);
+                        tempEmp = SystemGUI.sysSQL.getEmployee(localNurse.firstName, localNurse.lastName,
+                                localNurse.phone);
+                        localNurse = null;
+                        break;
+                    case 4:
+                        SystemGUI.sysSQL.createNonMedical(localNonMedicalEmployee);
+                        tempEmp = SystemGUI.sysSQL.getEmployee(localNonMedicalEmployee.firstName, localNonMedicalEmployee.lastName,
+                                localNonMedicalEmployee.phone);
+                        localNonMedicalEmployee = null;
+                        break;
+                    default:
+                        tempEmp = null;
+                        break;
+                }
+                SystemGUI.sysSQL.addEmployeeSchdule(Integer.parseInt(tempEmp.eID), es);
+                SystemGUI.mainLabel.setText("Created");
             }
-            SystemGUI.mainLabel.setText("Created");
-            if(tempEmp != null){
-                SystemGUI.sysSQL.addEmployeeSchdule(Integer.parseInt(tempEmp.eID), tempSch);
+            else{
+                SystemGUI.mainLabel.setText("Not Created");
             }
             
-            empType = 0;
+            
+            //empType = 0;
             
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-        
     }
+	
+	
+	private int testTimeRange(String sTime, String sAmPm, String eTime,
+	                String eAmPm){
+            int firstIndex;
+            String sHour;
+            String sMinutes;
+            firstIndex = sTime.indexOf(":");
+            sHour = sTime.substring(0, firstIndex);
+            sMinutes = sTime.substring(firstIndex + 1, sTime.length() - 1);
+            int sHourInt = Integer.parseInt(sHour);
+            int sMinutesInt = Integer.parseInt(sMinutes);
+
+            if(sAmPm.equals("pm") && sHourInt < 12){
+                sHourInt += 12;
+            }
+
+            String eHour;
+            String eMinutes;
+            firstIndex = eTime.indexOf(":");
+            eHour = eTime.substring(0, firstIndex);
+            eMinutes = eTime.substring(firstIndex + 1, eTime.length() - 1);
+            int eHourInt = Integer.parseInt(eHour);
+            int eMinutesInt = Integer.parseInt(eMinutes);
+
+            if(eAmPm.equals("pm") && eHourInt < 12){
+                eHourInt += 12;
+            }
+
+            if((sHourInt > 18) || (eHourInt > 18)){
+                return -1;
+            }
+
+            if((sHourInt * 60 + sMinutesInt) < (eHourInt * 60 + eMinutesInt)){
+                SystemGUI.mainLabel.setText("sTime hours: " + sHourInt + " minutes: " + 
+                        sMinutesInt);
+                return 1;
+            }
+            else{
+                return 0;
+            }
+
+        }
     
 }
