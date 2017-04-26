@@ -7,6 +7,7 @@ package edu.cecs343.labcode;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.*;
@@ -160,7 +161,7 @@ public class CalendarHub {
             calendarDisplay.add(dayChoice);
                 //Select Date Field
                 day = new JComboBox();
-                day.addActionListener(dateStuff.new MonthSelection());
+                //day.addActionListener(dateStuff.new MonthSelection());
                 dayChoice.add(day);
                 
             //Week Display
@@ -523,7 +524,7 @@ public class CalendarHub {
                 masterPanel.add(calendarInfoPanel);
                 daysOfWeek.setVisible(true);
                 weekCalendarPane = new JScrollPane(tempPanel2);
-                calendarDisplayInfo.setText("Week View: " + cal.getWeek());
+                //calendarDisplayInfo.setText("Week View: " + cal.getWeek());
                 weekCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                 weekCalendarPane.setBounds(0, 0, 1200, 600);
                 contentPanel = new JPanel(null);
@@ -550,12 +551,26 @@ public class CalendarHub {
     }
     
     
-    public static void main(String[] args) 
+    public static void main(String[] args) throws ParseException 
     {
         
         CalendarHub calHub = new CalendarHub();
         calHub.setMasterToFrame();
         calHub.setLogin();
+        /*
+        String week[] = calHub.cal.getDaysOfWeek();
+        for(int i = 0; i < week.length; i++){
+            System.out.println(week[i]);
+        }
+        
+        calHub.cal.incrementWeekRange();
+        week = calHub.cal.getDaysOfWeek();
+        
+        for(int i = 0; i < week.length; i++){
+            System.out.println(week[i]);
+        }
+        */
+        
         //calHub.setVisibleHomePanel(calHub.currentEmployee, calHub.currentDisplay);
         calHub.showFrame();
         calHub.showMaster();
