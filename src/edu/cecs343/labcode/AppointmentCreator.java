@@ -734,7 +734,7 @@ public class AppointmentCreator {
     }
     
     
-    /*
+    
     class MonthSelection implements ActionListener{
 
         @Override
@@ -863,7 +863,7 @@ public class AppointmentCreator {
     }
     
     
-    
+    /*
     public JPanel createAppt(){
         // Sets up GUI to create an appointment
         JPanel mainPanel;

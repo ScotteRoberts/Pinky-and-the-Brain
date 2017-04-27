@@ -850,6 +850,34 @@ public class SystemSQL {
         return null;
     }
     
+    public ArrayList<Employee> getAllEmployee(){
+        ArrayList<Employee> allEmps = new ArrayList<Employee>();
+        String sql = "SELECT * FROM Employee";
+        ResultSet rs;
+        try{
+            prepState = conn.prepareStatement(sql);
+            rs = prepState.executeQuery();
+            while(rs.next()){
+                String employeeID = rs.getString("employeeID");
+                String userName = rs.getString("userName");
+                //int HPassword = rs.getInt("HPassword");
+                String firstName = rs.getString("firstName");
+                String lastName = rs.getString("lastName");
+                String phone = rs.getString("phone");
+                Employee tempEmployee = new Employee(userName, firstName, lastName, phone);
+                tempEmployee.setEID(employeeID);
+                allEmps.add(tempEmployee);
+            }
+            return allEmps;
+        }
+        catch(SQLException se){
+            
+        }
+        
+        
+        return null;
+    }
+    
     public String testDoctorName(String firstName, String lastName){
         // Gets doctor employeeID by first and last name 
         ResultSet rs;
@@ -913,7 +941,8 @@ public class SystemSQL {
         */
        ResultSet rs = null;
        String query = "SELECT * FROM Patient "
-               + "NATURAL JOIN Appointment "
+               + "INNER JOIN Appointment "
+               + "ON appointment.PATIENTID = PATIENT.PATIENTID "
                + "WHERE patientFN = ? AND patientLN = ? "
                + "AND patientPhone = ?";
        try{ 

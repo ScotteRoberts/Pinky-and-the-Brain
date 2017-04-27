@@ -101,20 +101,21 @@ public class LoginPage {
                         SystemGUI.calHub.loginInfo.setText(currentUsername);
                         SystemGUI.calHub.currentDisplay = 1;
                         int displayType = 1;
+                        String dayDate = SystemGUI.calHub.cal.getDay();
                         switch(employeeType){
                             case 1:
                                 //admin
-                                SystemGUI.calHub.setVisibleHomePanel(employeeType, displayType);
+                                SystemGUI.calHub.setVisibleHomePanel(employeeType, displayType, dayDate);
                                 SystemGUI.calHub.currentEmployee = employeeType;
                                 break;
                             case 2:
                                 //Medical
-                                SystemGUI.calHub.setVisibleHomePanel(employeeType, displayType);
+                                SystemGUI.calHub.setVisibleHomePanel(employeeType, displayType, dayDate);
                                 SystemGUI.calHub.currentEmployee = employeeType;
                                 break;
                             case 3:
                                 //NonMedical
-                                SystemGUI.calHub.setVisibleHomePanel(employeeType, displayType);
+                                SystemGUI.calHub.setVisibleHomePanel(employeeType, displayType, dayDate);
                                 SystemGUI.calHub.currentEmployee = employeeType;
                                 break;
                             default:

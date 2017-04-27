@@ -84,6 +84,8 @@ public class SystemGUI {
     private PatientCreation patientCreator = new PatientCreation();
     private AppointmentCreator appointmentCreator =  new AppointmentCreator();
     
+    private JComboBox allEmployees;
+    
     
     
     SystemGUI(){
@@ -312,9 +314,24 @@ public class SystemGUI {
         mainPanel.add(message);
         
         // setup eid pannel
+        ArrayList<Employee> allEmps = sysSQL.getAllEmployee();
+        String emps[];
+        if(!allEmps.isEmpty()){
+            emps = new String[allEmps.size()];
+            for(int i = 0; i < allEmps.size(); i++){
+                emps[i] = allEmps.get(i).eID + " " + allEmps.get(i).firstName + " "
+                        + allEmps.get(i).lastName + " " + allEmps.get(i).userName;
+            }
+        }
+        else{
+            emps = new String[1];
+            emps[0] = "None";   
+        }
+        allEmployees = new JComboBox(emps);
+        
         JPanel eid = new JPanel(new GridLayout(1,2));
-        JLabel eID = new JLabel("Employee ID", JLabel.CENTER);
-        eid.add(eID); eid.add(employeeID);
+        JLabel eID = new JLabel("Employee ", JLabel.CENTER);
+        eid.add(eID); eid.add(allEmployees);
         mainPanel.add(eid);
         
         // setup username
@@ -344,28 +361,30 @@ public class SystemGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(!eUserName.getText().equals("") && !employeeID.getText().equals("")
-                    && !eReUserName.getText().equals("")){
+            if(!eUserName.getText().equals("") && !eReUserName.getText().equals("")){
                 // Test to see if all the paramaters are entered
-                if(sysSQL.verifyEmployee(employeeID.getText())){
-                    if(eUserName.getText().equals(eReUserName.getText())){
-                        // Test to see if the usernames match
-                        if(sysSQL.testUserName(eUserName.getText())){
-                            // If all is etered the statement is executed
-                            sysSQL.updateUserName(employeeID.getText(), eUserName.getText());
-                            mainLabel.setText("Updated");
-                        }
-                        else{
-                            mainLabel.setText("User Name exists");
-                        }
+                Object o = allEmployees.getItemAt(allEmployees.getSelectedIndex());
+                String information = o.toString();
+                int index = information.indexOf(" ");
+                String eID = information.substring(0, index);
+                if(eUserName.getText().equals(eReUserName.getText())){
+                    // Test to see if the usernames match
+                    if(sysSQL.testUserName(eUserName.getText())){
+                        // If all is etered the statement is executed
+                        sysSQL.updateUserName(eID, eUserName.getText());
+                        mainLabel.setText("Updated");
+                        CalendarHub.clearMasterPanel();
+                        CalendarHub.masterPanel.add(editUserName());
                     }
                     else{
-                        mainLabel.setText("Usernames don't match");
+                        mainLabel.setText("User Name exists");
                     }
                 }
                 else{
-                    mainLabel.setText("Employee does not exist");
+                    mainLabel.setText("Usernames don't match");
                 }
+                
+                
             }
             else{
                 mainLabel.setText("Missing fields");
@@ -517,171 +536,183 @@ public class SystemGUI {
         
     }
     
+    public JPanel editAppointment(){
+        return appointmentCreator.editAppointment();
+    }
+    
+    
 
    
-    public JPanel editAppointment(){
-        // Sets up edit appointment pannel
-        JPanel mainPanel;
-        
-        clearPanel();
-        
-        // Set up mainPanel
-        mainPanel = new JPanel(new GridLayout(7,1));
-        
-        // setup title
-        JLabel message = new JLabel("Edit Appointment", 
-                JLabel.CENTER);
-        
-        message.setFont((new Font("ariel", Font.PLAIN, 24)));
-        mainPanel.add(message);
-        
-        // setup patient info
-        // setup first information panel
-        JPanel panelInfo1 = new JPanel(new GridLayout(1,6));
-        JLabel firstName = new JLabel("Patirnt First Name", JLabel.CENTER);
-        JLabel lastName = new JLabel(" Patient Last Name", JLabel.CENTER);
-        JLabel phone = new JLabel("Patient Phone", JLabel.CENTER);
-        panelInfo1.add(firstName); panelInfo1.add(eFirstName);
-        panelInfo1.add(lastName); panelInfo1.add(eLastName);
-        panelInfo1.add(phone); panelInfo1.add(ePhone);
-        mainPanel.add(panelInfo1);
-        
-        // Add Search button
-        JButton search =  new JButton("Search");
-        search.addActionListener(new EASearch());
-        search.setActionCommand(SEARCH);
-        mainPanel.add(search);
-        
-        if(changeEditAppointment != 0){
-            String apptTime[];
-            apptTime = new String[editAppt.size()];
-            JPanel buttons = new JPanel(new GridLayout(1,2));
-            JButton edit = new JButton("Edit");
-            JButton delete = new JButton("Delete");
-            edit.addActionListener(new EASearch());
-            delete.addActionListener(new EASearch());
-            edit.setActionCommand("EDIT");
-            delete.setActionCommand("DELETE");
-            buttons.add(edit); buttons.add(delete);
-            for(int i = 0; i < editAppt.size(); i++){
-                Employee temp = new Employee("", "", "", "");
-                temp = sysSQL.getDoctorName(editAppt.get(i).doctorID);
-                apptTime[i] = "Date: " + editAppt.get(i).aDate + 
-                        " Time: " + editAppt.get(i).aTime + " Doctor: " +
-                        temp.firstName + " " + temp.lastName;
-                
-                
-            }
-            apptBox = new JComboBox(apptTime);
-            mainPanel.add(apptBox);
-            mainPanel.add(buttons);
-            
-            
-        }
-        else{
-            JLabel a  = new JLabel("");
-            mainPanel.add(a);
-            mainPanel.add(a);
-        }
-        
-        /*
-        // setup Back button
-        JButton back = new JButton("Back");
-        back.addActionListener(new BackButton());
-        mainPanel.add(back);
-*/
-        
-        // Setup messange
-        mainLabel = new JLabel("", JLabel.CENTER);
-        mainPanel.add(mainLabel);
-        
-        // Add mainPanel to master panel 
-        SystemGUI.masterPanel.add(mainPanel);
-        updatePanel();
-        return mainPanel;
-    }
+//    public JPanel editAppointment(){
+//        // Sets up edit appointment pannel
+//        JPanel mainPanel;
+//        
+//        clearPanel();
+//        
+//        // Set up mainPanel
+//        mainPanel = new JPanel(new GridLayout(7,1));
+//        
+//        // setup title
+//        JLabel message = new JLabel("Edit Appointment", 
+//                JLabel.CENTER);
+//        
+//        message.setFont((new Font("ariel", Font.PLAIN, 24)));
+//        mainPanel.add(message);
+//        
+//        // setup patient info
+//        // setup first information panel
+//        JPanel panelInfo1 = new JPanel(new GridLayout(1,6));
+//        JLabel firstName = new JLabel("Patirnt First Name", JLabel.CENTER);
+//        JLabel lastName = new JLabel(" Patient Last Name", JLabel.CENTER);
+//        JLabel phone = new JLabel("Patient Phone", JLabel.CENTER);
+//        panelInfo1.add(firstName); panelInfo1.add(eFirstName);
+//        panelInfo1.add(lastName); panelInfo1.add(eLastName);
+//        panelInfo1.add(phone); panelInfo1.add(ePhone);
+//        mainPanel.add(panelInfo1);
+//        
+//        // Add Search button
+//        JButton search =  new JButton("Search");
+//        search.addActionListener(new EASearch());
+//        search.setActionCommand(SEARCH);
+//        mainPanel.add(search);
+//        
+//        if(changeEditAppointment != 0){
+//            String apptTime[];
+//            apptTime = new String[editAppt.size()];
+//            JPanel buttons = new JPanel(new GridLayout(1,2));
+//            JButton edit = new JButton("Edit");
+//            JButton delete = new JButton("Delete");
+//            edit.addActionListener(new EASearch());
+//            delete.addActionListener(new EASearch());
+//            edit.setActionCommand("EDIT");
+//            delete.setActionCommand("DELETE");
+//            buttons.add(edit); buttons.add(delete);
+//            for(int i = 0; i < editAppt.size(); i++){
+//                Employee temp = new Employee("", "", "", "");
+//                temp = sysSQL.getDoctorName(editAppt.get(i).doctorID);
+//                apptTime[i] = "Date: " + editAppt.get(i).aDate + 
+//                        " Time: " + editAppt.get(i).aTime + " Doctor: " +
+//                        temp.firstName + " " + temp.lastName;
+//                
+//                
+//            }
+//            apptBox = new JComboBox(apptTime);
+//            mainPanel.add(apptBox);
+//            mainPanel.add(buttons);
+//            
+//            
+//        }
+//        else{
+//            JLabel a  = new JLabel("");
+//            mainPanel.add(a);
+//            mainPanel.add(a);
+//        }
+//        
+//        /*
+//        // setup Back button
+//        JButton back = new JButton("Back");
+//        back.addActionListener(new BackButton());
+//        mainPanel.add(back);
+//*/
+//        
+//        // Setup messange
+//        mainLabel = new JLabel("", JLabel.CENTER);
+//        mainPanel.add(mainLabel);
+//        
+//        // Add mainPanel to master panel 
+//        SystemGUI.masterPanel.add(mainPanel);
+//        updatePanel();
+//        return mainPanel;
+//    }
+//    
+//    class EASearch implements ActionListener{
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if(e.getActionCommand().equals(SEARCH)){
+//                if(!eFirstName.getText().equals("") && !eLastName.getText().equals("") &&
+//                        !ePhone.getText().equals("")){
+//                    //Makes sure all the paramaters are entered into the GUI
+//                    ArrayList<Patient> tempP = sysSQL.lookUpPatient(eLastName.getText(), eFirstName.getText()
+//                            , ePhone.getText());
+//                    if(!tempP.isEmpty()){
+//                        // Searches the patient to make sure it exits
+//                        editAppt = null;
+//                        editAppt = sysSQL.getAllPatientAppt(eFirstName.getText(), eLastName.getText(), ePhone.getText());
+//                        if(!editAppt.isEmpty()){
+//                            // Gets all the patients appointments
+//                            changeEditAppointment = 1;
+//                            CalendarHub.clearMasterPanel();
+//                            CalendarHub.masterPanel.add(editAppointment());
+//                            
+//                            mainLabel.setText("Worked");
+//                        }
+//                        else{
+//                            mainLabel.setText("Patient does not have an appointment");
+//                        }
+//                    }
+//                    else{
+//                        mainLabel.setText("Patient does not exist");
+//                    }
+//                }
+//                else{
+//                    mainLabel.setText("Information not entered");
+//                }
+//            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//            
+//            if(e.getActionCommand().equals("EDIT")){
+//                // This is edit action 
+//                apptDateTimeDoc = null;
+//                Object o = apptBox.getItemAt(apptBox.getSelectedIndex());
+//                apptDateTimeDoc = o.toString();
+//                CalendarHub.clearMasterPanel();
+//                CalendarHub.masterPanel.add(editAppointment2());
+//                //mainLabel.setText(apptDateTimeDoc);
+//            }
+//            
+//            if(e.getActionCommand().equals("DELETE")){
+//                // This is delete action
+//                apptDateTimeDoc = null;
+//                Object o = apptBox.getItemAt(apptBox.getSelectedIndex());
+//                apptDateTimeDoc = o.toString();
+//                //mainLabel.setText(apptDateTimeDoc);
+//                String test;
+//                test = apptDateTimeDoc;
+//                int n1 = test.indexOf("Time");
+//                int n2 = test.indexOf(" ");
+//                String date = test.substring(n2 + 1, n1 - 1);
+//                test = test.replaceFirst(" ", "");
+//                test = test.replaceFirst(" ", "");       
+//                n1 = test.indexOf("Doctor");
+//                n2 = test.indexOf(" ");
+//                String time = test.substring(n2 + 1, n1 - 1);
+//                test = test.replaceFirst(" ", "");
+//                test = test.replaceFirst(" ", "");
+//                n2 = test.indexOf(" ");
+//                String d = test.substring(n2 + 1, test.length());
+//                
+//                n1 = d.indexOf(" ");
+//                String fn = d.substring(0, n1);
+//                String ln = d.substring(n1 + 1, d.length());
+//                
+//                String doctorID = sysSQL.testDoctorName(fn, ln);
+//             
+//                //Delete appointment
+//                sysSQL.deleteAppointment(doctorID, date, time);
+//                mainLabel.setText("Deleted");
+//            }
+//            
+//        }
+//    }
+//    
+//    private JPanel editAppointment2(){
+//    
+//        
+//        return null;
+//    }
     
-    class EASearch implements ActionListener{
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if(e.getActionCommand().equals(SEARCH)){
-                if(!eFirstName.getText().equals("") && !eLastName.getText().equals("") &&
-                        !ePhone.getText().equals("")){
-                    //Makes sure all the paramaters are entered into the GUI
-                    ArrayList<Patient> tempP = sysSQL.lookUpPatient(eLastName.getText(), eFirstName.getText()
-                            , ePhone.getText());
-                    if(!tempP.isEmpty()){
-                        // Searches the patient to make sure it exits
-                        editAppt = null;
-                        editAppt = sysSQL.getAllPatientAppt(eFirstName.getText(), eLastName.getText(), ePhone.getText());
-                        if(!editAppt.isEmpty()){
-                            // Gets all the patients appointments
-                            changeEditAppointment = 1;
-                            CalendarHub.clearMasterPanel();
-                            CalendarHub.masterPanel.add(editAppointment());
-                            
-                            mainLabel.setText("Worked");
-                        }
-                        else{
-                            mainLabel.setText("Patient does not have an appointment");
-                        }
-                    }
-                    else{
-                        mainLabel.setText("Patient does not exist");
-                    }
-                }
-                else{
-                    mainLabel.setText("Information not entered");
-                }
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-            
-            if(e.getActionCommand().equals("EDIT")){
-                // This is edit action 
-                apptDateTimeDoc = null;
-                Object o = apptBox.getItemAt(apptBox.getSelectedIndex());
-                apptDateTimeDoc = o.toString();
-                CalendarHub.clearMasterPanel();
-                CalendarHub.masterPanel.add(editAppointment2());
-                //mainLabel.setText(apptDateTimeDoc);
-            }
-            
-            if(e.getActionCommand().equals("DELETE")){
-                // This is delete action
-                apptDateTimeDoc = null;
-                Object o = apptBox.getItemAt(apptBox.getSelectedIndex());
-                apptDateTimeDoc = o.toString();
-                //mainLabel.setText(apptDateTimeDoc);
-                String test;
-                test = apptDateTimeDoc;
-                int n1 = test.indexOf("Time");
-                int n2 = test.indexOf(" ");
-                String date = test.substring(n2 + 1, n1 - 1);
-                test = test.replaceFirst(" ", "");
-                test = test.replaceFirst(" ", "");       
-                n1 = test.indexOf("Doctor");
-                n2 = test.indexOf(" ");
-                String time = test.substring(n2 + 1, n1 - 1);
-                test = test.replaceFirst(" ", "");
-                test = test.replaceFirst(" ", "");
-                n2 = test.indexOf(" ");
-                String d = test.substring(n2 + 1, test.length());
-                
-                n1 = d.indexOf(" ");
-                String fn = d.substring(0, n1);
-                String ln = d.substring(n1 + 1, d.length());
-                
-                String doctorID = sysSQL.testDoctorName(fn, ln);
-             
-                //Delete appointment
-                sysSQL.deleteAppointment(doctorID, date, time);
-                mainLabel.setText("Deleted");
-            }
-            
-        }
-    }
-    
+    /*
     private JPanel editAppointment2(){
         // Sets up the other half need to exicute edit appointment
         JPanel mainPanel;
@@ -742,7 +773,7 @@ public class SystemGUI {
         JButton back = new JButton("Back");
         back.addActionListener(new BackButton());
         mainPanel.add(back);
-*/
+
        
         
         // Setup messange
@@ -803,6 +834,7 @@ public class SystemGUI {
         }
         
     }
+*/
     
     
     

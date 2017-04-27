@@ -7,12 +7,13 @@ package edu.cecs343.labcode;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -25,6 +26,7 @@ public class CalendarHub {
     SystemGUI sysGUI;
     SystemSQL sysSQL;
     CalendarTest cal;
+    CalendarTest calHome;
     Help help = new Help();
     AppointmentCreator dateStuff;
     //---------------------------------------- Single Jframe
@@ -36,8 +38,9 @@ public class CalendarHub {
     JMenuItem homeItem;
     //----------------------------------------- User Info
     JMenu userInfo;
-    JMenuItem createUser;
-    JMenuItem editPatient;
+        JMenuItem createUser;
+        JMenuItem createPatient;
+        JMenuItem editPatient;
     //----------------------------------------- Account menu and items
     JMenu account;
     JMenuItem changeUsername;
@@ -70,9 +73,9 @@ public class CalendarHub {
     //---------------------------------------- All Panels
     public static JPanel masterPanel;
     JPanel calendarInfoPanel;
-    JPanel tempPanel1;
-    JPanel tempPanel2;
-    JPanel tempPanel3;
+    JPanel dayInfoPanel;
+    JPanel weekInfoPanel;
+    JPanel monthInfoPanel;
     JPanel contentPanel;
     //---------------------------------------- All Labels
     JLabel loginInfo;
@@ -82,11 +85,15 @@ public class CalendarHub {
     JScrollPane dayCalendarPane;
     JScrollPane weekCalendarPane;
     JScrollPane monthCalendarPane;
+    //---------------------------------------- Increment/Decrement Buttons
+    DayButton leftDay;
+    
     
     public CalendarHub()
     {
         //---------------------------------------- Main parts
         cal = CalendarTest.getInstance();
+        calHome = CalendarTest.getInstance();
         sysSQL = new SystemSQL();
         sysGUI = new SystemGUI(this);
         dateStuff = new AppointmentCreator();
@@ -105,7 +112,6 @@ public class CalendarHub {
         
         //Home Menu
         home = new JMenu("Home");
-        home.setMnemonic(KeyEvent.VK_M);
             //Home Menu Item
             homeItem = new JMenuItem("Home");
             homeItem.addActionListener(new HandleMenuItem());
@@ -118,6 +124,10 @@ public class CalendarHub {
             createUser = new JMenuItem("Create User");
             createUser.addActionListener(new HandleMenuItem());
             userInfo.add(createUser);
+            //CreatePatient
+            createPatient = new JMenuItem("Create Patient");
+            createPatient.addActionListener(new HandleMenuItem());
+            userInfo.add(createPatient);
             //EditUser
             editPatient = new JMenuItem("Edit Patient");
             editPatient.addActionListener(new HandleMenuItem());
@@ -126,7 +136,6 @@ public class CalendarHub {
         
         //Account Menu
         account = new JMenu("Account");
-        account.setMnemonic(KeyEvent.VK_M);
             //Account's Items
             changeUsername = new JMenuItem("Change Username");
             changeUsername.addActionListener(new HandleMenuItem());
@@ -138,7 +147,6 @@ public class CalendarHub {
         
         //Appointments Menu
         appointments = new JMenu("Appointments");
-        appointments.setMnemonic(KeyEvent.VK_M);
             //Appointments Items
             createAppointment = new JMenuItem("Create Appointment");
             createAppointment.addActionListener(new HandleMenuItem());
@@ -150,7 +158,6 @@ public class CalendarHub {
         
         //Calendar Display Menu
         calendarDisplay = new JMenu("Calendar Display");
-        calendarDisplay.setMnemonic(KeyEvent.VK_M);
             //Day Display
             dayDisplay = new JMenuItem("Day Display");
             dayDisplay.addActionListener(new HandleMenuItem());
@@ -161,7 +168,7 @@ public class CalendarHub {
             calendarDisplay.add(dayChoice);
                 //Select Date Field
                 day = new JComboBox();
-                //day.addActionListener(dateStuff.new MonthSelection());
+                day.addActionListener(dateStuff.new MonthSelection());
                 dayChoice.add(day);
                 
             //Week Display
@@ -220,35 +227,32 @@ public class CalendarHub {
                 + "Sat   ", JLabel.CENTER);
         
         //DayCalendar
-        tempPanel1 = new JPanel();
-        tempPanel1.setLayout(new GridLayout(100,2));
-        tempPanel1.setBackground(Color.white);
-        pullDayQueries(cal.getDay());
+        dayInfoPanel = new JPanel();
+        dayInfoPanel.setLayout(new GridLayout(100,2));
+        dayInfoPanel.setBackground(Color.white);
+        
         
         //WeekCalendar
-        tempPanel2 = new JPanel();
-        tempPanel1.setBackground(Color.white);
-        tempPanel2.setLayout(new GridLayout(15,7));
-        pullWeekQueries();
+        weekInfoPanel = new JPanel();
+        weekInfoPanel.setBackground(Color.white);
+        weekInfoPanel.setLayout(new GridLayout(15,7));
         
         //MonthCalendar
-        tempPanel3 = new JPanel();
-        tempPanel1.setBackground(Color.white);
-        tempPanel3.setLayout(new GridLayout(5,7));
-        displayMonthCalendar();
-        //this is a comment
+        monthInfoPanel = new JPanel();
+        //monthInfoPanel.setBackground(Color.white);
+        monthInfoPanel.setLayout(new GridLayout(5,7));
         
-          
+        dayChoice.setVisible(false);
     }
     
-    public void pullDayQueries(String date)
+    public void setDayInfoPanel (String dayDate)
     {
-        calendarDisplayInfo.setText("Day View: " + date);
-        clearPanel(tempPanel1);
-        ArrayList<Appointment> appts;
-        appts = sysSQL.allAppointmentByDate(date);
+        clearPanel(dayInfoPanel);
+        System.out.println("The Date is: " + dayDate);
+        calendarDisplayInfo.setText("Day View: " + dayDate);
+        ArrayList<Appointment> appts = sysSQL.allAppointmentByDate(dayDate);
         if (appts.size() == 0)
-            tempPanel1.add(new JLabel("No appointments today", JLabel.CENTER));
+            dayInfoPanel.add(new JLabel("No appointments today", JLabel.CENTER));
         
         String hour = null;
         for (int i = 0; i < appts.size(); i++)
@@ -256,78 +260,224 @@ public class CalendarHub {
             if (!appts.get(i).aTime.equals(hour))
             {
                 hour = appts.get(i).aTime;
-                tempPanel1.add(new JLabel());
+                dayInfoPanel.add(new JLabel());
                 JLabel tempLabel = new JLabel(hour, JLabel.LEFT);
-                tempPanel1.add(tempLabel);
+                dayInfoPanel.add(tempLabel);
             }
             Patient tempPat = sysSQL.lookUpPatient(appts.get(i).pID);
             Employee tempDoc = sysSQL.lookUpEmployee(appts.get(i).doctorID);
-            tempPanel1.add(new JLabel ("Patient: " + tempPat.patientLN + ", " + 
+            dayInfoPanel.add(new JLabel ("Patient: " + tempPat.patientLN + ", " + 
                     tempPat.patientFN + "  Doctor: " + tempDoc.lastName + ", "
                     + tempDoc.firstName, JLabel.LEFT));
         }
+        calendarInfoPanel.add(calendarDisplayInfo);
+        calendarInfoPanel.add(daysOfWeek);
+        masterPanel.add(calendarInfoPanel);
+        daysOfWeek.setVisible(false);
+
+        dayCalendarPane = new JScrollPane(dayInfoPanel);
+        dayCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        dayCalendarPane.setBounds(0, 0, 1100, 600);
+        contentPanel = new JPanel(null);
+        contentPanel.setPreferredSize(new Dimension(1100,600));
+        contentPanel.add(dayCalendarPane);
+
+        JPanel dayAndButton = new JPanel();
         
+        DayButton leftDay = new DayButton("<<", this.cal.decrementDay());
+        leftDay.addActionListener(new HandleDayButton());
+        DayButton rightDay = new DayButton(">>", this.cal.incrementDay());
+        rightDay.addActionListener(new HandleDayButton());
+        dayAndButton.add(leftDay);
+        dayAndButton.add(contentPanel);
+        dayAndButton.add(rightDay);
+        masterPanel.add(dayAndButton);
     }
     
-    class HandleDayChoiceComboBox implements ActionListener
-    {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            
-        }
-    }
     
-    public void pullWeekQueries()
+    public void setWeekInfoPanel(String dayDate)
     {
-        for (int i = 0; i <100; i++)
+        clearPanel(weekInfoPanel);
+        JPanel fullWeekPanel = new JPanel(new GridLayout(1,2));
+        calendarInfoPanel.add(calendarDisplayInfo);
+        calendarInfoPanel.add(daysOfWeek);
+        masterPanel.add(calendarInfoPanel);
+        daysOfWeek.setVisible(true);
+        
+        calendarDisplayInfo.setText("Week View: " + cal.getWeekRange());
+        JPanel times = new JPanel(new GridLayout(40,1));
+        for (int i = 0; i < 10; i++)
         {
-            //Populates Columns first
-            tempPanel2.add(new JLabel ("# of Appointments", JLabel.CENTER));
+            for (int j = 0; j < 4; j++)
+            {
+                if(i == 12)
+                    times.add(new JLabel("" + 12 + ":" + j));
+                else
+                    times.add(new JLabel("" + (i+8) % 12 + ":" + (j*15)));
+            }  
         }
+        fullWeekPanel.add(times);
+        
+        JPanel appointments = new JPanel();
+        appointments.setLayout(new GridLayout(20,1));
+        for (int i = 0; i < 20; i++)
+        {
+            JPanel tempPanel = new JPanel(new GridLayout(1,7));
+            for (int j = 0; j < 7; j++)
+            {
+               tempPanel.add(new JButton(""+j)); 
+            }
+           
+            appointments.add(tempPanel);
+        }
+        
+        weekCalendarPane = new JScrollPane(weekInfoPanel);
+        weekCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        weekCalendarPane.setBounds(0, 0, 1100, 600);
+        contentPanel = new JPanel(null);
+        contentPanel.setPreferredSize(new Dimension(1100,600));
+        contentPanel.add(weekCalendarPane);
+
+        JPanel weekAndButton = new JPanel();
+        JButton leftWeek = new JButton("<<");
+        JButton rightWeek = new JButton(">>");
+        weekAndButton.add(leftWeek);
+        weekAndButton.add(contentPanel);
+        weekAndButton.add(rightWeek);
+        masterPanel.add(weekAndButton);
     }
     
     
     
     
-    public void displayMonthCalendar()
+    public void setMonthInfoPanel(String monthDate)
     {
+        clearPanel(monthInfoPanel);
+        calendarInfoPanel.add(calendarDisplayInfo);
+        calendarInfoPanel.add(daysOfWeek);
+        masterPanel.add(calendarInfoPanel);
+        daysOfWeek.setVisible(true);
+
+        calendarDisplayInfo.setText("Month View: " + cal.getMonth());
+        CalendarTest tempCal = cal;
         //Calculate first day of Month
-        cal.setMonthToStart();
+        tempCal.setMonthToStart();
         //This line needs fixing: cal.dayOfWeek is stuck on a different variable than the new calendar day we want.
-        int tempDayOfWeek = cal.cal.get(Calendar.DAY_OF_WEEK);  //Get day of Week for new calendar
+        int tempDayOfWeek = tempCal.cal.get(Calendar.DAY_OF_WEEK);  //Get day of Week for new calendar
         //Create space for the first day of the month on the proper day of week
         for (int i = 1; i < tempDayOfWeek; i++)
         {
-            tempPanel3.add(new JLabel("", JLabel.CENTER));
+            monthInfoPanel.add(new JLabel("", JLabel.CENTER));
         }
         for (int i = 1; i <= cal.daysInMonth[cal.month]; i++)
         {
             
-            CalendarButton tempButton = new CalendarButton(i, cal.month+1+"/"+i+"/"+cal.year);
-            tempButton.addActionListener(new HandleCalendarButton());
-            tempPanel3.add(tempButton);
+            DayButton tempButton = new DayButton(i, cal.month+1+"/"+i+"/"+cal.year);
+            tempButton.addActionListener(new HandleDayButton());
+            monthInfoPanel.add(tempButton);
             
         }
+        
+        monthCalendarPane = new JScrollPane(monthInfoPanel);
+        monthCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        monthCalendarPane.setBounds(0, 0, 1100, 600);
+        
+        contentPanel = new JPanel(null);
+        contentPanel.setPreferredSize(new Dimension(1100,600));
+        contentPanel.add(monthCalendarPane);
+
+        JPanel monthAndButton = new JPanel();
+        JButton leftMonth = new JButton("<<");
+        JButton rightMonth = new JButton(">>");
+        monthAndButton.add(leftMonth);
+        monthAndButton.add(contentPanel);
+        monthAndButton.add(rightMonth);
+        masterPanel.add(monthAndButton);
     }
-    class CalendarButton extends JButton
+    
+    class DayButton extends JButton
     {
-        String date;
-        CalendarButton(int day, String d)
+        String dayDate = null;
+        //DayButton
+        DayButton(int day, String d)
         {
             super("" + day);
-            date = d;
+            dayDate = d;
         }
-        
+        DayButton(String direction, String d)
+        {
+            super("" + direction);
+            dayDate = d;
+        }
+        void setDay(String d)
+        {
+            dayDate = d;
+        }
     }
-    public class HandleCalendarButton implements ActionListener
+    
+    class HandleDayButton implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DayButton button = (DayButton) e.getSource();
+            clearMasterPanel();
+            System.out.println("Date Pressed: " + button.dayDate);
+            currentDisplay = 1;
+            setVisibleHomePanel(currentEmployee, currentDisplay, button.dayDate);
+            if(button.getText().equals("<<"))
+                button.setDay(cal.decrementDay());
+            else
+                button.setDay(cal.incrementDay());
+        }
+    }
+    
+    class WeekButton extends JButton
+    {
+        String weekDate = null;
+        //DayButton
+        WeekButton(String direction, String d)
+        {
+            super("" + direction);
+            weekDate = d;
+        } 
+    }
+    
+    class HandleWeekButton implements ActionListener
     {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CalendarButton button = (CalendarButton) e.getSource();
+                WeekButton button = (WeekButton) e.getSource();
                 clearMasterPanel();
-                currentDisplay = 1;
-                pullDayQueries(button.date);
-                setVisibleHomePanel(currentEmployee, currentDisplay);
+                System.out.println("Date Pressed: " + button.weekDate);
+                currentDisplay = 2;
+                //Conflicting Problem!!!!
+                //setWeekInfoPanel(button.weekDate);
+                setVisibleHomePanel(currentEmployee, currentDisplay, button.weekDate);
+            }
+    }
+    
+    class MonthButton extends JButton
+    {
+        String monthDate = null;
+        //DayButton
+        MonthButton(String direction, String d)
+        {
+            super("" + direction);
+            monthDate = d;
+        } 
+    }
+    
+    class HandleMonthButton implements ActionListener
+    {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MonthButton button = (MonthButton) e.getSource();
+                clearMasterPanel();
+                System.out.println("Date Pressed: " + button.monthDate);
+                currentDisplay = 3;
+                //Conflicting Problem!!!!
+                //setWeekInfoPanel(button.weekDate);
+                setVisibleHomePanel(currentEmployee, currentDisplay, button.monthDate);
             }
     }
     
@@ -372,6 +522,8 @@ public class CalendarHub {
                 setHomePanel();
             if(command.equals("Create User"))
                 setCreateUserPanel();
+            if(command.equals("Create Patient"))
+                setCreatePatientPanel();
             if(command.equals("Edit Patient"))
                 setEditPatientPanel();
             if(command.equals("Change Username"))
@@ -398,13 +550,18 @@ public class CalendarHub {
     {
         clearMasterPanel();
         currentDisplay = 1;
-        pullDayQueries(cal.getDay());
-        setVisibleHomePanel(currentEmployee, currentDisplay);
+        setVisibleHomePanel(currentEmployee, currentDisplay, calHome.getDay());
     }
     void setCreateUserPanel()
     {
         clearMasterPanel();
         masterPanel.add(sysGUI.createEmployee());
+    }
+    void setCreatePatientPanel()
+    {
+        System.out.println("Create Patient");
+        clearMasterPanel();
+        masterPanel.add(sysGUI.createPatient());
     }
     void setEditPatientPanel()
     {
@@ -435,8 +592,9 @@ public class CalendarHub {
     {
         clearMasterPanel();
         currentDisplay = 1;
-        setVisibleHomePanel(currentEmployee, currentDisplay);
+        setVisibleHomePanel(currentEmployee, currentDisplay, calHome.getDay());
     }
+    /*
     void setDayDisplay()
     {
         clearMasterPanel();
@@ -444,17 +602,18 @@ public class CalendarHub {
         //pullDayQueries();
         setVisibleHomePanel(currentEmployee, currentDisplay);
     }
+    */
     void changeToWeekDisplay()
     {
         clearMasterPanel();
         currentDisplay = 2;
-        setVisibleHomePanel(currentEmployee, currentDisplay);
+        setVisibleHomePanel(currentEmployee, currentDisplay, calHome.getDay());
     }
     void changeToMonthDisplay()
     {
         clearMasterPanel();
         currentDisplay = 3;
-        setVisibleHomePanel(currentEmployee, currentDisplay);
+        setVisibleHomePanel(currentEmployee, currentDisplay, calHome.getMonth());
     }
     void setHelpDisplay()
     {
@@ -473,28 +632,31 @@ public class CalendarHub {
     }
     
     //----------------------------------------------------------------- Home Panel Visibility
-    public void setVisibleHomePanel(int menuAccess, int calendarType)
+    public void setVisibleHomePanel(int menuAccess, int calendarType, String date)
     {
         clearMasterPanel();
         menuBar.setVisible(true);
-            home.setVisible(true);
-            userInfo.setVisible(true);
-            account.setVisible(true);
-            appointments.setVisible(true);
-            calendarDisplay.setVisible(true);
+        home.setVisible(true);
+        userInfo.setVisible(true);
+        account.setVisible(true);
+        appointments.setVisible(true);
+        calendarDisplay.setVisible(true);
         switch (menuAccess)
         {
             //Admin
             case 1:
-                
+                createUser.setVisible(true);
+                createPatient.setVisible(false);
                 break;
             //Medical Employee
             case 2:
-                
+                createUser.setVisible(false);
+                createPatient.setVisible(true);
                 break;
             //Non-Medical Employee
             case 3:
-                
+                createUser.setVisible(false);
+                createPatient.setVisible(false);
                 break;
         }
         switch(calendarType)
@@ -503,74 +665,26 @@ public class CalendarHub {
                 break;
             //day
             case 1:
-                calendarInfoPanel.add(calendarDisplayInfo);
-                calendarInfoPanel.add(daysOfWeek);
-                masterPanel.add(calendarInfoPanel);
-                daysOfWeek.setVisible(false);
-                //pullDayQueries();
-                dayCalendarPane = new JScrollPane(tempPanel1);
-                
-                dayCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                dayCalendarPane.setBounds(0, 0, 1200, 600);
-                contentPanel = new JPanel(null);
-                contentPanel.setPreferredSize(new Dimension(1200,600));
-                contentPanel.add(dayCalendarPane);
-                masterPanel.add(contentPanel);
+                setDayInfoPanel(date);
                 break;
             //week
             case 2:
-                calendarInfoPanel.add(calendarDisplayInfo);
-                calendarInfoPanel.add(daysOfWeek);
-                masterPanel.add(calendarInfoPanel);
-                daysOfWeek.setVisible(true);
-                weekCalendarPane = new JScrollPane(tempPanel2);
-                //calendarDisplayInfo.setText("Week View: " + cal.getWeek());
-                weekCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                weekCalendarPane.setBounds(0, 0, 1200, 600);
-                contentPanel = new JPanel(null);
-                contentPanel.setPreferredSize(new Dimension(1200,600));
-                contentPanel.add(weekCalendarPane);
-                masterPanel.add(contentPanel);
+                setWeekInfoPanel(date);
                 break;
             //month
             case 3:
-                calendarInfoPanel.add(calendarDisplayInfo);
-                calendarInfoPanel.add(daysOfWeek);
-                masterPanel.add(calendarInfoPanel);
-                daysOfWeek.setVisible(true);
-                monthCalendarPane = new JScrollPane(tempPanel3);
-                calendarDisplayInfo.setText("Month View: " + cal.getMonth());
-                monthCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                monthCalendarPane.setBounds(0, 0, 1200, 600);
-                contentPanel = new JPanel(null);
-                contentPanel.setPreferredSize(new Dimension(1200,600));
-                contentPanel.add(monthCalendarPane);
-                masterPanel.add(contentPanel);
+                setMonthInfoPanel(date);
                 break;
         }
     }
     
     
-    public static void main(String[] args) throws ParseException 
+    public static void main(String[] args) 
     {
         
         CalendarHub calHub = new CalendarHub();
         calHub.setMasterToFrame();
         calHub.setLogin();
-        /*
-        String week[] = calHub.cal.getDaysOfWeek();
-        for(int i = 0; i < week.length; i++){
-            System.out.println(week[i]);
-        }
-        
-        calHub.cal.incrementWeekRange();
-        week = calHub.cal.getDaysOfWeek();
-        
-        for(int i = 0; i < week.length; i++){
-            System.out.println(week[i]);
-        }
-        */
-        
         //calHub.setVisibleHomePanel(calHub.currentEmployee, calHub.currentDisplay);
         calHub.showFrame();
         calHub.showMaster();
