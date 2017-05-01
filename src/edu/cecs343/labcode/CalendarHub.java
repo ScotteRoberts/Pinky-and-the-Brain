@@ -88,6 +88,7 @@ public class CalendarHub {
     //---------------------------------------- Increment/Decrement Buttons
     DayButton leftDay;
     
+    WeeklyView wv = new WeeklyView();
     
     public CalendarHub()
     {
@@ -606,8 +607,9 @@ public class CalendarHub {
     void changeToWeekDisplay()
     {
         clearMasterPanel();
-        currentDisplay = 2;
-        setVisibleHomePanel(currentEmployee, currentDisplay, calHome.getDay());
+//        currentDisplay = 2;
+//        setVisibleHomePanel(currentEmployee, currentDisplay, calHome.getDay());
+        masterPanel.add(wv.weekView());
     }
     void changeToMonthDisplay()
     {
@@ -684,6 +686,16 @@ public class CalendarHub {
         
         CalendarHub calHub = new CalendarHub();
         calHub.setMasterToFrame();
+//        String week[] = calHub.cal.getDaysOfWeek();
+//        for(int i= 0;i < week.length; i++){
+//            System.out.println(week[i]);
+//        }
+//        calHub.cal.incrementWeekRange();
+//        week = calHub.cal.getDaysOfWeek();
+//        for(int i= 0;i < week.length; i++){
+//            System.out.println(week[i]);
+//        }
+        
         calHub.setLogin();
         //calHub.setVisibleHomePanel(calHub.currentEmployee, calHub.currentDisplay);
         calHub.showFrame();
