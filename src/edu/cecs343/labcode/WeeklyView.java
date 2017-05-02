@@ -79,35 +79,36 @@ public class WeeklyView {
         JPanel selectPanel[] = new JPanel[7];
         SystemGUI.clearPanel();
 
-//        String doc[];
-//        ArrayList<Employee> e = new ArrayList<Employee>();
-//        e = SystemGUI.sysSQL.getAllDoctors();
-//        
+        String doc[];
+        ArrayList<Employee> e = new ArrayList<Employee>();
+        e = SystemGUI.sysSQL.getAllDoctors();
+        
         String dates[] = ct.getDaysOfWeek();
-//        
-//        if(!e.isEmpty()){
-//            doc = new String[e.size()];
-//            int i = 0;
-//            while(i < e.size()){
-//                doc[i] = e.get(i).lastName + ", " + e.get(i).firstName;
-//                i++;
-//            }
-//                
-//        }
-//        else{
-//            doc = new String[1];
-//            doc[0] = "None";
-//        }
         
-//        String temp[] = new String[doc.length + 1];
-//        temp[0] = "Select";
-//        for(int i = 1; i < temp.length; i++){
-//            temp[i] = doc[i - 1];
-//        }
-//        doc = temp;
+        if(!e.isEmpty()){
+            doc = new String[e.size()];
+            int i = 0;
+            while(i < e.size()){
+                doc[i] = e.get(i).lastName + ", " + e.get(i).firstName;
+                i++;
+            }
+                
+        }
+        else{
+            doc = new String[1];
+            doc[0] = "None";
+        }
         
-//        SystemGUI.docBox = new JComboBox(doc);
-//        SystemGUI.docBox.addActionListener(new SelectedDoctor());
+        String temp[] = new String[doc.length + 1];
+        temp[0] = "Select";
+        for(int i = 1; i < temp.length; i++){
+            temp[i] = doc[i - 1];
+        }
+        doc = temp;
+        
+        SystemGUI.docBox = new JComboBox(doc);
+        SystemGUI.docBox.setVisible(false);
+        SystemGUI.docBox.addActionListener(new SelectedDoctor());
         SystemGUI.mainLabel =  new JLabel("");
         for(int i = 0;i < 9; i++){
             JPanel tempPanel = new JPanel(new GridLayout(oppTime.length + 5, 1));
@@ -116,6 +117,9 @@ public class WeeklyView {
                     if(j == oppTime.length/2){
                         JButton t = new JButton("<<");
                         tempPanel.add(t);
+                    }
+                    else if(j == 0){
+                        tempPanel.add(new JLabel("               "));
                     }
                     else{
                         tempPanel.add(new JLabel(""));
@@ -129,6 +133,9 @@ public class WeeklyView {
                         JButton t = new JButton(">>");
                         tempPanel.add(t);
                     }
+                    else if(j == 0){
+                        tempPanel.add(new JLabel("               "));
+                    }
                     else{
                         tempPanel.add(new JLabel(""));
                     }
@@ -136,25 +143,27 @@ public class WeeklyView {
                 
             }
             else{
-//                if(i == 6){
-//                        
-//                    tempPanel.add(SystemGUI.docBox);
-//                        
-//                }
-//                else if(i == 5){
-//                    if(setDoc){
-//                        tempPanel.add(new JLabel(apptDoc.lastName + ", "
-//                        + apptDoc.firstName));
-//                    }
-//                    else{
-//                        tempPanel.add(new JLabel(""));
-//                    }
-//                    
-//                }
-//                else{
-//                        tempPanel.add(new JLabel(""));
-//                }
-                tempPanel.add(new JLabel(""));
+                if(i == 6){
+                        
+                    tempPanel.add(SystemGUI.docBox);
+                        
+                }
+                else if(i == 5){
+                    if(setDoc){
+                        tempPanel.add(new JLabel(apptDoc.lastName + ", "
+                        + apptDoc.firstName));
+                    }
+                    else{
+                        tempPanel.add(new JLabel(""));
+                    }
+                    
+                }
+                else{
+                        tempPanel.add(new JLabel(""));
+                }
+                //JButton tt = new JButton("        ");
+                //tt.setVisible(false);
+                //tempPanel.add(tt);
                 //if(setDoc){
                     
                     tempPanel.add(new JLabel(daysOfWeek[i - 1]));
