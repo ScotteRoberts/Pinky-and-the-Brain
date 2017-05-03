@@ -72,8 +72,11 @@ public class AppointmentCreator {
     
     private String editApptDate, editApptTime;
     
+    private String dates[];
+    
     AppointmentCreator(){
         //month.addActionListener(new MonthSelection());
+        dates = ct.getDaysOfWeek();
         
     }
     
@@ -89,7 +92,7 @@ public class AppointmentCreator {
         ArrayList<Employee> e = new ArrayList<Employee>();
         e = SystemGUI.sysSQL.getAllDoctors();
         
-        String dates[] = ct.getDaysOfWeek();
+        //String dates[] = ct.getDaysOfWeek();
         
         if(!e.isEmpty()){
             doc = new String[e.size()];
@@ -121,6 +124,7 @@ public class AppointmentCreator {
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
                         JButton t = new JButton("<<");
+                        t.addActionListener(new LeftArrow());
                         tempPanel.add(t);
                     }
                     else{
@@ -133,6 +137,8 @@ public class AppointmentCreator {
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
                         JButton t = new JButton(">>");
+                        t.addActionListener(new RightArrow());
+                        
                         tempPanel.add(t);
                     }
                     else{
@@ -359,7 +365,7 @@ public class AppointmentCreator {
         // setup patient info
         // setup first information panel
         JPanel panelInfo1 = new JPanel(new GridLayout(1,6));
-        JLabel firstName = new JLabel("Patirnt First Name", JLabel.CENTER);
+        JLabel firstName = new JLabel("Patient First Name", JLabel.CENTER);
         JLabel lastName = new JLabel(" Patient Last Name", JLabel.CENTER);
         JLabel phone = new JLabel("Patient Phone", JLabel.CENTER);
         panelInfo1.add(firstName); panelInfo1.add(eFirstName);
@@ -579,6 +585,8 @@ public class AppointmentCreator {
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
                         JButton t = new JButton("<<");
+                        
+                        t.addActionListener(new LeftArrowEdit());
                         tempPanel.add(t);
                     }
                     else{
@@ -591,6 +599,7 @@ public class AppointmentCreator {
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
                         JButton t = new JButton(">>");
+                        t.addActionListener(new RightArrowEdit());
                         tempPanel.add(t);
                     }
                     else{
@@ -733,6 +742,80 @@ public class AppointmentCreator {
         
     }
     
+    class LeftArrow implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            ct.decrementWeekRange();
+            dates = ct.getDaysOfWeek();
+            CalendarHub.clearMasterPanel();
+            if(apptDoc != null){
+                setDoc = true;
+            }
+            CalendarHub.masterPanel.add(createAppt());
+            
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+    }
+    
+    
+    class RightArrow implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            ct.incrementWeekRange();
+            dates = ct.getDaysOfWeek();
+            CalendarHub.clearMasterPanel();
+            if(apptDoc != null){
+                setDoc = true;
+            }
+            CalendarHub.masterPanel.add(createAppt());
+            
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+    }
+    
+    
+    class LeftArrowEdit implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            ct.decrementWeekRange();
+            dates = ct.getDaysOfWeek();
+            CalendarHub.clearMasterPanel();
+            if(apptDoc != null){
+                editSetDoc = true;
+            }
+            CalendarHub.masterPanel.add(editAppointment2());
+            
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+    }
+    
+    
+    class RightArrowEdit implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            ct.incrementWeekRange();
+            dates = ct.getDaysOfWeek();
+            CalendarHub.clearMasterPanel();
+            if(apptDoc != null){
+                editSetDoc = true;
+            }
+            CalendarHub.masterPanel.add(editAppointment2());
+            
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+    }
     
     
     class MonthSelection implements ActionListener{

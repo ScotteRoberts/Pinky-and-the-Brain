@@ -63,13 +63,11 @@ public class WeeklyView {
     
     private ArrayList<Appointment> editAppt = null;
     
-    private Employee editApptDoc; 
-    private Patient editPatient;
-    
-    private String editApptDate, editApptTime;
+
+    private String dates[];
     
     WeeklyView(){
-        
+        dates = ct.getDaysOfWeek();
     }
     
     public JPanel weekView(){
@@ -83,7 +81,7 @@ public class WeeklyView {
         ArrayList<Employee> e = new ArrayList<Employee>();
         e = SystemGUI.sysSQL.getAllDoctors();
         
-        String dates[] = ct.getDaysOfWeek();
+        
         
         if(!e.isEmpty()){
             doc = new String[e.size()];
@@ -108,7 +106,7 @@ public class WeeklyView {
         
         SystemGUI.docBox = new JComboBox(doc);
         SystemGUI.docBox.setVisible(false);
-        SystemGUI.docBox.addActionListener(new SelectedDoctor());
+        //SystemGUI.docBox.addActionListener(new SelectedDoctor());
         SystemGUI.mainLabel =  new JLabel("");
         for(int i = 0;i < 9; i++){
             JPanel tempPanel = new JPanel(new GridLayout(oppTime.length + 5, 1));
@@ -116,6 +114,7 @@ public class WeeklyView {
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
                         JButton t = new JButton("<<");
+                        t.addActionListener(new LeftArrow());
                         tempPanel.add(t);
                     }
                     else if(j == 0){
@@ -131,6 +130,7 @@ public class WeeklyView {
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
                         JButton t = new JButton(">>");
+                        t.addActionListener(new RightArrow());
                         tempPanel.add(t);
                     }
                     else if(j == 0){
@@ -246,25 +246,18 @@ public class WeeklyView {
         
     }
     
-    class SelectedDoctor implements ActionListener{
+    class LeftArrow implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-//            Object o = SystemGUI.docBox.getItemAt(SystemGUI.docBox.getSelectedIndex());
-//            String preDoc = o.toString();
-//            String lastName = preDoc.substring(0, preDoc.indexOf(','));
-//            String firstName  = preDoc.substring(preDoc.indexOf(',')  + 2, preDoc.length());
-//            
-//            String dEID = SystemGUI.sysSQL.testDoctorName(firstName, lastName);
-//            EmployeeSchdule tempSch = SystemGUI.sysSQL.getEmployeeSchdule(dEID);
-//            apptDoc = SystemGUI.sysSQL.lookUpEmployee(dEID);
-//            apptDoc.setEID(dEID);
-//            apptDoc.setEmployeeSchdule(tempSch);
-//            
-//            setDoc = true;
-//            
-//            CalendarHub.clearMasterPanel();
-//            //CalendarHub.masterPanel.add(createAppt());
+            
+            ct.decrementWeekRange();
+            dates = ct.getDaysOfWeek();
+            CalendarHub.clearMasterPanel();
+            if(apptDoc != null){
+                setDoc = true;
+            }
+            CalendarHub.masterPanel.add(weekView());
             
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
@@ -272,7 +265,22 @@ public class WeeklyView {
     }
     
     
-    
-    
+    class RightArrow implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            ct.incrementWeekRange();
+            dates = ct.getDaysOfWeek();
+            CalendarHub.clearMasterPanel();
+            if(apptDoc != null){
+                setDoc = true;
+            }
+            CalendarHub.masterPanel.add(weekView());
+            
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+    } 
     
 }
