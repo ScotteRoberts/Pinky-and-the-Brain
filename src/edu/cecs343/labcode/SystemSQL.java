@@ -260,6 +260,67 @@ public class SystemSQL {
         
     }
     
+    public void addEmployeeSchdule(int employeeId, EmployeeSchdule es){
+        String sql = "INSERT INTO schedule(employeeID, mondayStart, mondayEnd,"
+                + " tuesdayStart, tuesdayEnd, wednesdayStart, wednesdayEnd,"
+                + "thrusdayStart, thrusdayEnd, fridayStart, fridayEnd) "
+                + "VALUES(?, ?, ?, ?, ? ,? , ?, ?, ?, ?, ? )";
+        try{
+            prepState = conn.prepareStatement(sql);
+            prepState.setInt(1, employeeId);
+            prepState.setString(2, es.mondayStart);
+            prepState.setString(3, es.mondayEnd);
+            prepState.setString(4, es.tuesdayStart);
+            prepState.setString(5, es.tuesdayEnd);
+            prepState.setString(6, es.wednesdayStart);
+            prepState.setString(7, es.wednesdayEnd);
+            prepState.setString(8, es.thrusdayStart);
+            prepState.setString(9, es.tuesdayEnd);
+            prepState.setString(10, es.fridayStart);
+            prepState.setString(11, es.fridayEnd);
+            prepState.executeUpdate();
+            
+        }
+        catch(SQLException se){
+            Logger.getLogger(SystemSQL.class.getName()).log(Level.SEVERE, null, se);
+        }
+    }
+    
+    public EmployeeSchdule getEmployeeSchdule(String employeeId){
+        ResultSet rs;
+        EmployeeSchdule tempS;
+        String sql = "SELECT * FROM schedule WHERE employeeID = ?";
+        try{
+            prepState = conn.prepareStatement(sql);
+            prepState.setString(1, employeeId);
+            rs = prepState.executeQuery();
+            if(rs.next() == true){
+                String mondayStart = rs.getString("mondayStart");
+                String mondayEnd   = rs.getString("mondayEnd");
+                String tuesdayStart = rs.getString("tuesdayStart");
+                String tuesdayEnd = rs.getString("tuesdayEnd");
+                String wednesdayStart = rs.getString("wednesdayStart");
+                String wednesdayEnd   = rs.getString("wednesdayEnd");
+                String thrusdayStart = rs.getString("thrusdayStart");
+                String thrusdayEnd = rs.getString("thrusdayEnd");
+                String fridayStart = rs.getString("fridayStart");
+                String fridayEnd    = rs.getString("fridayEnd");
+                tempS = new EmployeeSchdule(mondayStart, mondayEnd, tuesdayStart, tuesdayEnd,
+                        wednesdayStart, wednesdayEnd, thrusdayStart, thrusdayEnd,  
+                        fridayStart, fridayEnd);
+                return tempS;
+            }
+            else{
+                return null;
+            }
+        }
+        catch(SQLException se){
+            Logger.getLogger(SystemSQL.class.getName()).log(Level.SEVERE, null, se);
+        }
+        
+        return null;
+    }
+    
     
     // All Keys and unique variables are tested here !!!!
     public boolean testUserName(String userName){
@@ -643,6 +704,45 @@ public class SystemSQL {
         return null;
     }
     
+    public ArrayList<Appointment> doctorsAppointment(String doctorIDi, 
+            String aDateC, String aTime){
+        /*
+        This returns an ArrayList which contains all appointments at the given
+        date and time
+        */
+        ArrayList<Appointment> a = new ArrayList<Appointment>();
+        Appointment aTemp = null;
+        ResultSet rs = null;
+        String LUASQL = "SELECT * FROM appointment WHERE aDate = ? AND aTime = ?"
+                + " AND doctorID = ?";
+        try{
+            prepState = conn.prepareStatement(LUASQL);
+            prepState.setString(1, aDateC);
+            prepState.setString(2, aTime);
+            prepState.setString(3, doctorIDi);
+            rs = prepState.executeQuery();
+            while(rs.next()){
+                String aID = rs.getString("aID");
+                String patientID = rs.getString("patientID");
+                String employeeID = rs.getString("employeeID");
+                String doctorID = rs.getString("doctorID");
+                aDateC = rs.getString("aDate");
+                aTime = rs.getString("aTime");
+                
+                aTemp = new Appointment(aID, patientID, employeeID, doctorID,
+                    aDateC, aTime);
+                a.add(aTemp);
+                aTemp =  null;
+            }
+            return a;
+        }
+        catch(SQLException se){
+            Logger.getLogger(SystemSQL.class.getName()).log(Level.SEVERE, null, se);
+        }
+        
+        return null;
+    }
+    
     public ArrayList<Appointment> allAppointmentByDate(String date){
         /*
         Returns an ArrayList<Appointment> which contains all the appointment
@@ -689,8 +789,8 @@ public class SystemSQL {
                 + "AND phone = ?";
         try{
             prepState = conn.prepareStatement(SQLQuery);
-            prepState.setString(1, employeeFirstName);
-            prepState.setString(2, employeeLastName);
+            prepState.setString(1, employeeFirstName.toUpperCase());
+            prepState.setString(2, employeeLastName.toUpperCase());
             prepState.setString(3, employeePhone);
             rs = prepState.executeQuery();
             if(rs.next()){
@@ -747,6 +847,34 @@ public class SystemSQL {
         catch(SQLException se){
             Logger.getLogger(SystemSQL.class.getName()).log(Level.SEVERE, null, se);
         }
+        return null;
+    }
+    
+    public ArrayList<Employee> getAllEmployee(){
+        ArrayList<Employee> allEmps = new ArrayList<Employee>();
+        String sql = "SELECT * FROM Employee";
+        ResultSet rs;
+        try{
+            prepState = conn.prepareStatement(sql);
+            rs = prepState.executeQuery();
+            while(rs.next()){
+                String employeeID = rs.getString("employeeID");
+                String userName = rs.getString("userName");
+                //int HPassword = rs.getInt("HPassword");
+                String firstName = rs.getString("firstName");
+                String lastName = rs.getString("lastName");
+                String phone = rs.getString("phone");
+                Employee tempEmployee = new Employee(userName, firstName, lastName, phone);
+                tempEmployee.setEID(employeeID);
+                allEmps.add(tempEmployee);
+            }
+            return allEmps;
+        }
+        catch(SQLException se){
+            
+        }
+        
+        
         return null;
     }
     
@@ -813,7 +941,8 @@ public class SystemSQL {
         */
        ResultSet rs = null;
        String query = "SELECT * FROM Patient "
-               + "NATURAL JOIN Appointment "
+               + "INNER JOIN Appointment "
+               + "ON appointment.PATIENTID = PATIENT.PATIENTID "
                + "WHERE patientFN = ? AND patientLN = ? "
                + "AND patientPhone = ?";
        try{ 

@@ -589,7 +589,7 @@ public class CalendarHubTest {
                 masterPanel.add(calendarInfoPanel);
                 daysOfWeek.setVisible(true);
                 weekCalendarPane = new JScrollPane(tempPanel2);
-                calendarDisplayInfo.setText("Week View: " + cal.getWeek());
+                //calendarDisplayInfo.setText("Week View: " + cal.getWeek());
                 weekCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                 weekCalendarPane.setBounds(0, 0, 1200, 600);
                 contentPanel = new JPanel(null);
