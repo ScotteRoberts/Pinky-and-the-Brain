@@ -219,8 +219,8 @@ public class SystemSQL {
         newPatient.setPID(Integer.toString(generatePatientID()));
         
         String createPatientSQL = "INSERT INTO patient(patientID, employeeID, "
-                + "patientFN, patientLN, patientPhone, patientIns) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+                + "patientFN, patientLN, patientPhone, patientIns, patientEmail) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try{
             prepState = conn.prepareStatement(createPatientSQL);
             prepState.setString(1, newPatient.pID);
@@ -229,6 +229,7 @@ public class SystemSQL {
             prepState.setString(4, newPatient.patientLN);
             prepState.setString(5, newPatient.patientPhone);
             prepState.setString(6, newPatient.ins);
+            prepState.setString(7, newPatient.email);
             prepState.executeUpdate();
         }
         catch(SQLException se){
@@ -625,9 +626,11 @@ public class SystemSQL {
                 String patientLN = rs.getString("patientLN");
                 String patientPhone = rs.getString("patientPhone");
                 String patientIns = rs.getString("patientIns");
+                String patinerEmail = rs.getString("patientEmail");
                 
                 pat = new Patient(pID, eID, patientFN, patientLN, patientPhone,
                  patientIns);
+                pat.setEmail(patinerEmail);
             }
             return pat;
             

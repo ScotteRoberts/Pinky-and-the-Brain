@@ -11,7 +11,7 @@ package edu.cecs343.labcode;
  */
 public class Patient {
     
-    public String pID, eID, patientFN, patientLN, patientPhone, ins;
+    public String pID, eID, patientFN, patientLN, patientPhone, ins, email;
     
     Patient(String pIDN, String eIDN, String patientFNN, String patientLNN, 
             String patientPhoneN, String insN){
@@ -25,6 +25,10 @@ public class Patient {
     
     public void setPID(String newPID){
         pID = newPID;
+    }
+    
+    public void setEmail(String newEmail){
+        email = newEmail;
     }
     
 }

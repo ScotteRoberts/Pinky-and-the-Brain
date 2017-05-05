@@ -158,6 +158,10 @@ public class CalendarTest{
         return "" + (month + 1) + "/" + firstDay + "/" + year;
     }
     
+    public String getTodaysDate(){
+        return (month + 1)  + "/" + day + "/" + year;
+    }
+    
     public String[] getDaysOfWeek()
     {
         String[] daysOfWeek = new String[7];

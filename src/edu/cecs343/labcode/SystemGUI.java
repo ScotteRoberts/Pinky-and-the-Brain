@@ -67,6 +67,7 @@ public class SystemGUI {
     public static JTextField newPatientFN = new JTextField(10);
     public static JTextField newPatientLN = new JTextField(10);
     public static JTextField newPatientPhone = new JTextField(10); 
+    public static JTextField email = new JTextField(20);
     
     // Used to create appointment
     public static JComboBox docBox;

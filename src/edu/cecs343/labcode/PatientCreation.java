@@ -34,14 +34,21 @@ public class PatientCreation {
         mainPanel.add(message);
         
         // setup first information panel
-        JPanel panelInfo1 = new JPanel(new GridLayout(1,6));
+        JPanel panelInfo1 = new JPanel(new GridLayout(1,4));
         JLabel firstName = new JLabel("First Name", JLabel.CENTER);
         JLabel lastName = new JLabel("Last Name", JLabel.CENTER);
         JLabel phone = new JLabel("Phone", JLabel.CENTER);
-        panelInfo1.add(firstName); panelInfo1.add(SystemGUI.eFirstName);
-        panelInfo1.add(lastName); panelInfo1.add(SystemGUI.eLastName);
-        panelInfo1.add(phone); panelInfo1.add(SystemGUI.ePhone);
+        JLabel email =  new JLabel("Email", JLabel.CENTER);
+        panelInfo1.add(firstName);panelInfo1.add(lastName);
+        panelInfo1.add(phone);panelInfo1.add(email);
+        
+        JPanel panelInfo2 = new JPanel(new GridLayout(1,4));
+        panelInfo2.add(SystemGUI.eFirstName);
+        panelInfo2.add(SystemGUI.eLastName);
+        panelInfo2.add(SystemGUI.ePhone);
+        panelInfo2.add(SystemGUI.email);
         mainPanel.add(panelInfo1);
+        mainPanel.add(panelInfo2);
         
         // Setup ok button
         JButton okButton = new JButton("Ok");
@@ -71,7 +78,7 @@ public class PatientCreation {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(!SystemGUI.eFirstName.getText().equals("") && !SystemGUI.eLastName.getText().equals("") && 
-                    !SystemGUI.ePhone.getText().equals("")){
+                    !SystemGUI.ePhone.getText().equals("") && !SystemGUI.email.getText().equals("")){
                 System.out.println("Create Patient 1");
                 //If all paramaters are entered the code moves foward
                 //mainLabel.setText("Everthing has been entered");
@@ -80,6 +87,7 @@ public class PatientCreation {
                     Patient tempPatient = new Patient("NA", SystemGUI.currentEmployee.eID, 
                             SystemGUI.eFirstName.getText(), SystemGUI.eLastName.getText(), 
                             SystemGUI.ePhone.getText(), "NA");
+                    tempPatient.setEmail(SystemGUI.email.getText());
                     //There might be an issue of clicking the button mutlitple
                     //time and making the same patient over and over again.
                     SystemGUI.sysSQL.createNewPatient(tempPatient);

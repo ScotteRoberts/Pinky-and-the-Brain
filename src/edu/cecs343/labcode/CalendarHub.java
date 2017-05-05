@@ -698,7 +698,10 @@ public class CalendarHub {
         
         calHub.setLogin();
         //calHub.setVisibleHomePanel(calHub.currentEmployee, calHub.currentDisplay);
+        //calHub.setCreateUserPanel();
         calHub.showFrame();
         calHub.showMaster();
+        AppointmentTester ap = new AppointmentTester();
+        
     }
 }
