@@ -702,6 +702,6 @@ public class CalendarHub {
         calHub.showFrame();
         calHub.showMaster();
         AppointmentTester ap = new AppointmentTester();
-        
+        System.out.println(calHub.cal.calData.getTomorrowsDate());
     }
 }

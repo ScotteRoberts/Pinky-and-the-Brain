@@ -28,8 +28,14 @@ public class AppointmentTester {
         private void intCurrent(){
             //String sTemp = ct.day + "/" + (ct.month + 1) + "/" + ct.year;
             //String sTemp = (ct.month + 1)  + "/" + ct.day + "/" + ct.year;
-            current = sq.allAppointmentByDate(ct.getTodaysDate());
-            sendMessage(current);
+            current = sq.allAppointmentByDate(ct.calData.getTodaysDate());
+            if(!current.isEmpty()){
+                sendMessage(current);
+            }
+            tomorrow = sq.allAppointmentByDate(ct.calData.getTomorrowsDate());
+            if(!tomorrow.isEmpty()){
+                sendMessage(tomorrow);
+            }
         }
         
         public void printAppts(){
@@ -39,7 +45,7 @@ public class AppointmentTester {
         }
         
         public void updateAppt(){
-            newList = sq.allAppointmentByDate(ct.getTodaysDate());
+            newList = sq.allAppointmentByDate(ct.calData.getTodaysDate());
             testUpdate();
         }
         
@@ -65,7 +71,33 @@ public class AppointmentTester {
                 sendMessage(newMail);
             }
             current = newList;
-            newList =  null;
+            
+            newList =  sq.allAppointmentByDate(ct.calData.getTomorrowsDate());
+            newMail = new ArrayList<Appointment>();
+            
+            if((tomorrow.size() == newList.size()) || 
+                    (tomorrow.size() < newList.size())){
+                // Update situation
+                for(int i = 0; i < newList.size(); i++){
+                    boolean found = false;
+                    for(int j = 0; j < tomorrow.size(); j++){
+                        if(newList.get(i).aID.equals(tomorrow.get(j).aID)){
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found){
+                        newMail.add(newList.get(i));
+                    }
+                }
+            }
+            if(!newMail.isEmpty()){
+                sendMessage(newMail);
+            }
+            
+            tomorrow = newList;
+            
+            
         }
         
         
@@ -78,10 +110,7 @@ public class AppointmentTester {
                         "With doctor: " + e.firstName + " " + e.lastName + "\n" +
                         "At: " + a.get(i).aTime + " Date: " + a.get(i).aDate;
                 String subject = "Appointment Reminder";
-                
                 SendMail.send(email, subject, message);
-                
-                
             }
             
         }

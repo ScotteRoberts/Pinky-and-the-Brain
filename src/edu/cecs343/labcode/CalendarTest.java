@@ -102,6 +102,23 @@ public class CalendarTest{
             return "" + (month + 1) + "/" + firstDay + "/" + year;
         }
         
+        public String getTodaysDate(){
+            return (month + 1)  + "/" + day + "/" + year;
+        }
+    
+        public String getTomorrowsDate(){
+            int tempDay, tempMonth;
+            if((day + 1) > daysInMonth[month]){
+                tempMonth = month + 1;
+                tempDay = 1;
+            }
+            else{
+                tempDay = day + 1;
+                tempMonth = month;
+            }
+            return (tempMonth + 1)  + "/" + tempDay + "/" + year;
+        }
+        
     }
     
     
@@ -137,6 +154,7 @@ public class CalendarTest{
       weekYear = cal.get(Calendar.WEEK_OF_YEAR);
       dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
       weekOfMonth = cal.get(Calendar.WEEK_OF_MONTH);
+      calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
       
     }
     
@@ -158,9 +176,7 @@ public class CalendarTest{
         return "" + (month + 1) + "/" + firstDay + "/" + year;
     }
     
-    public String getTodaysDate(){
-        return (month + 1)  + "/" + day + "/" + year;
-    }
+    
     
     public String[] getDaysOfWeek()
     {
