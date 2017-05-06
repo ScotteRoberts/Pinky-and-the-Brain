@@ -593,9 +593,11 @@ public class SystemSQL {
                 String patientLN = rs.getString("patientLN");
                 String patientPhone = rs.getString("patientPhone");
                 String patientIns = rs.getString("patientIns");
+                String email = rs.getString("patientEmail");
                 
                 tempPat = new Patient(pID, eID, patientFN, patientLN, patientPhone,
                  patientIns);
+                tempPat.setEmail(email);
                 pat.add(tempPat);
                 tempPat = null;
             }

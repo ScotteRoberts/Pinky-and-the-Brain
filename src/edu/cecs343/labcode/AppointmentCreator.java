@@ -84,7 +84,7 @@ public class AppointmentCreator {
     JPanel createAppt(){
         // Sets up GUI to create an appointment
         JPanel mainPanel = new JPanel();
-        JPanel midPanel = new JPanel(new GridLayout(1,9));
+        JPanel midPanel = new JPanel(new GridLayout(1,8));
         JPanel selectPanel[] = new JPanel[7];
         SystemGUI.clearPanel();
 
@@ -123,9 +123,9 @@ public class AppointmentCreator {
             if(i == 0){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-                        JButton t = new JButton("<<");
-                        t.addActionListener(new LeftArrow());
-                        tempPanel.add(t);
+//                        JButton t = new JButton("<<");
+//                        t.addActionListener(new LeftArrow());
+//                        tempPanel.add(t);
                     }
                     else{
                         tempPanel.add(new JLabel(""));
@@ -136,10 +136,9 @@ public class AppointmentCreator {
             else if(i == 8){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-                        JButton t = new JButton(">>");
-                        t.addActionListener(new RightArrow());
-                        
-                        tempPanel.add(t);
+//                        JButton t = new JButton(">>");
+//                        t.addActionListener(new RightArrow());
+//                        tempPanel.add(t);
                     }
                     else{
                         tempPanel.add(new JLabel(""));
@@ -206,8 +205,17 @@ public class AppointmentCreator {
                     }
 
                 }
-                if(i == 3){
-                tempPanel.add(SystemGUI.mainLabel);
+                if(i == 1){
+                    tempPanel.add(SystemGUI.mainLabel);
+                    JButton t = new JButton("<<");
+                    t.addActionListener(new LeftArrow());
+                    tempPanel.add(t);
+                }
+                else if(i == 7){
+                    JButton t = new JButton(">>");
+                    t.addActionListener(new RightArrow());
+                    tempPanel.add(t);
+                    
                 }
                 else{
                 tempPanel.add(new JLabel(""));
@@ -331,6 +339,13 @@ public class AppointmentCreator {
                         Appointment tempAppt = new Appointment("NA", tempP.get(0).pID,
                                 SystemGUI.currentEmployee.eID, apptDoc.eID, apptDate, apptTime);
                         SystemGUI.sysSQL.makeNewAppointment(tempAppt);
+                        String email = tempP.get(0).email;
+                        String subject = "New Appointment";
+                        String message = "You have an appointment with " + apptDoc.firstName +
+                                " " + apptDoc.lastName + "\n" + 
+                                "At " + apptTime + " On " + apptDate;
+                        SendMail.send(email, subject, message);
+                        
                         SystemGUI.mainLabel.setText("Created");
                     }
                     else{
@@ -534,8 +549,19 @@ public class AppointmentCreator {
                 changeEditAppointment = 0;
                 SystemGUI.clearAllText();
                 //Delete appointment
+                
+                ArrayList<Appointment> a = SystemGUI.sysSQL.doctorsAppointment(doctorID, date, time);
+                Patient p = SystemGUI.sysSQL.lookUpPatient(a.get(0).pID);
+                
                 sysSQL.deleteAppointment(doctorID, date, time);
                 mainLabel.setText("Deleted");
+                
+                String email = p.email;
+                String subject = "Appointment Deleted";
+                String message = "Your appointment with " + fn +
+                    " " + ln + "\n" + "Has been deleted";
+                SendMail.send(email, subject, message);
+                
                 CalendarHub.clearMasterPanel();
                 CalendarHub.masterPanel.add(editAppointment());
             }
@@ -584,10 +610,9 @@ public class AppointmentCreator {
             if(i == 0){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-                        JButton t = new JButton("<<");
-                        
-                        t.addActionListener(new LeftArrowEdit());
-                        tempPanel.add(t);
+//                        JButton t = new JButton("<<");
+//                        t.addActionListener(new LeftArrowEdit());
+//                        tempPanel.add(t);
                     }
                     else{
                         tempPanel.add(new JLabel(""));
@@ -598,9 +623,9 @@ public class AppointmentCreator {
             else if(i == 8){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-                        JButton t = new JButton(">>");
-                        t.addActionListener(new RightArrowEdit());
-                        tempPanel.add(t);
+//                        JButton t = new JButton(">>");
+//                        t.addActionListener(new RightArrowEdit());
+//                        tempPanel.add(t);
                     }
                     else{
                         tempPanel.add(new JLabel(""));
@@ -667,8 +692,16 @@ public class AppointmentCreator {
                     }
 
                 }
-                if(i == 3){
-                tempPanel.add(SystemGUI.mainLabel);
+                if(i == 1){
+                    JButton t = new JButton("<<");
+                    t.addActionListener(new LeftArrowEdit());
+                    tempPanel.add(t);
+                }
+                else if(i == 7){
+                    JButton t = new JButton(">>");
+                    t.addActionListener(new RightArrowEdit());
+                    tempPanel.add(t);
+                    
                 }
                 else{
                 tempPanel.add(new JLabel(""));
@@ -733,6 +766,13 @@ public class AppointmentCreator {
                                 SystemGUI.currentEmployee.eID, apptDoc.eID, apptDate, apptTime);
             SystemGUI.sysSQL.makeNewAppointment(tempAppt);
             SystemGUI.mainLabel.setText("Changed");
+            String email = editPatient.email;
+            String subject = "Changed appointmenr";
+            String message = "Your appointment with " + editApptDoc.firstName +
+                    " " + editApptDoc.lastName + "\n" + "Has been changed with "+
+                    apptDoc.firstName + " " + apptDoc.lastName + 
+                    "At " + apptTime + " On " + apptDate;
+            SendMail.send(email, subject, message);
             changeEditAppointment = 0;
             SystemGUI.clearAllText();
             CalendarHub.clearMasterPanel();
@@ -944,6 +984,7 @@ public class AppointmentCreator {
         }
         
     }
+    
     
     
     /*

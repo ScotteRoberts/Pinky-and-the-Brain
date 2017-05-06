@@ -158,6 +158,18 @@ public class CalendarTest{
       
     }
     
+    public void setToDefault(){
+      year = cal.get(Calendar.YEAR);
+      month = cal.get(Calendar.MONTH);      // 0 to 11
+      day = cal.get(Calendar.DAY_OF_MONTH);
+      hour = cal.get(Calendar.HOUR_OF_DAY);
+      minute = cal.get(Calendar.MINUTE);
+      second = cal.get(Calendar.SECOND);
+      weekYear = cal.get(Calendar.WEEK_OF_YEAR);
+      dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+      weekOfMonth = cal.get(Calendar.WEEK_OF_MONTH);
+    }
+    
     public static CalendarTest getInstance()
     {
         if (null == instance)

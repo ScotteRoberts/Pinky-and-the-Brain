@@ -66,6 +66,8 @@ public class WeeklyView {
 
     private String dates[];
     
+    //CalendarHub calHub = new CalendarHub();
+    
     WeeklyView(){
         dates = ct.getDaysOfWeek();
     }
@@ -113,9 +115,9 @@ public class WeeklyView {
             if(i == 0){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-                        JButton t = new JButton("<<");
-                        t.addActionListener(new LeftArrow());
-                        tempPanel.add(t);
+//                        JButton t = new JButton("<<");
+//                        t.addActionListener(new LeftArrow());
+//                        tempPanel.add(t);
                     }
                     else if(j == 0){
                         tempPanel.add(new JLabel("               "));
@@ -129,9 +131,9 @@ public class WeeklyView {
             else if(i == 8){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-                        JButton t = new JButton(">>");
-                        t.addActionListener(new RightArrow());
-                        tempPanel.add(t);
+//                        JButton t = new JButton(">>");
+//                        t.addActionListener(new RightArrow());
+//                        tempPanel.add(t);
                     }
                     else if(j == 0){
                         tempPanel.add(new JLabel("               "));
@@ -208,6 +210,17 @@ public class WeeklyView {
                 if(i == 3){
                 tempPanel.add(SystemGUI.mainLabel);
                 }
+                else if(i == 1){
+                    JButton t = new JButton("<<");
+                    t.addActionListener(new LeftArrow());
+                    tempPanel.add(t);
+                }
+                else if(i == 7){
+                    JButton t = new JButton(">>");
+                    t.addActionListener(new RightArrow());
+                    tempPanel.add(t);
+                    
+                }
                 else{
                 tempPanel.add(new JLabel(""));
                 }
@@ -228,19 +241,28 @@ public class WeeklyView {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-//            Object o = e.getSource();
-//            JButton b;
-//            b = (JButton) o;
-//            Object test = b.getComponent(0);
-//            JLabel test1 = (JLabel)test;
-//            
-//            //Object test1 = b.getComponent(1);
-//            SystemGUI.mainLabel.setText(test1.getText());
-//            apptTime = b.getText();
-//            apptDate = test1.getText();
-//            CalendarHub.clearMasterPanel();
-//            CalendarHub.masterPanel.add(enterPatient());
+            Object o = e.getSource();
+            JButton b;
+            b = (JButton) o;
+            Object test = b.getComponent(0);
+            JLabel test1 = (JLabel)test;
             
+            //Object test1 = b.getComponent(1);
+            SystemGUI.mainLabel.setText(test1.getText());
+            apptTime = b.getText();
+            apptDate = test1.getText();
+            int index = apptDate.indexOf("/");
+            String day = apptDate.substring(0, index);
+            int apptDay = Integer.parseInt(day);
+            String tDate = apptDate.substring(index + 1, apptDate.length());
+            index = apptDate.indexOf("/");
+            String month = apptDate.substring(0, index);
+            int apptMonth = Integer.parseInt(month);
+            
+//            calHub.cal.day = apptDay;
+//            calHub.cal.month = apptMonth - 1;
+//            calHub.setHomePanel();
+//            
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         

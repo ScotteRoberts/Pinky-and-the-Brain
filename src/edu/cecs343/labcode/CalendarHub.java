@@ -425,10 +425,14 @@ public class CalendarHub {
             System.out.println("Date Pressed: " + button.dayDate);
             currentDisplay = 1;
             setVisibleHomePanel(currentEmployee, currentDisplay, button.dayDate);
-            if(button.getText().equals("<<"))
+            if(button.getText().equals("<<")){
                 button.setDay(cal.decrementDay());
-            else
+                setHomePanel();
+            }
+            else if(button.getText().equals(">>")){
                 button.setDay(cal.incrementDay());
+                setHomePanel();
+            }
         }
     }
     
@@ -520,6 +524,7 @@ public class CalendarHub {
             String command = e.getActionCommand();
             System.out.println("Selected: " + command);
             if(command.equals("Home"))
+                cal.setToDefault();
                 setHomePanel();
             if(command.equals("Create User"))
                 setCreateUserPanel();
