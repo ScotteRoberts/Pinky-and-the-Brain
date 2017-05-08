@@ -28,11 +28,11 @@ public class AppointmentTester {
         private void intCurrent(){
             //String sTemp = ct.day + "/" + (ct.month + 1) + "/" + ct.year;
             //String sTemp = (ct.month + 1)  + "/" + ct.day + "/" + ct.year;
-            current = sq.allAppointmentByDate(ct.calData.getTodaysDate());
+            current = sq.allAppointmentByDate(ct.emails.getTodaysDate());
             if(!current.isEmpty()){
                 sendMessage(current);
             }
-            tomorrow = sq.allAppointmentByDate(ct.calData.getTomorrowsDate());
+            tomorrow = sq.allAppointmentByDate(ct.emails.getTomorrowsDate());
             if(!tomorrow.isEmpty()){
                 sendMessage(tomorrow);
             }
@@ -45,7 +45,7 @@ public class AppointmentTester {
         }
         
         public void updateAppt(){
-            newList = sq.allAppointmentByDate(ct.calData.getTodaysDate());
+            newList = sq.allAppointmentByDate(ct.emails.getTodaysDate());
             testUpdate();
         }
         
@@ -72,7 +72,7 @@ public class AppointmentTester {
             }
             current = newList;
             
-            newList =  sq.allAppointmentByDate(ct.calData.getTomorrowsDate());
+            newList =  sq.allAppointmentByDate(ct.emails.getTomorrowsDate());
             newMail = new ArrayList<Appointment>();
             
             if((tomorrow.size() == newList.size()) || 

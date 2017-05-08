@@ -9,6 +9,7 @@ package edu.cecs343.labcode;
  *
  * @author ahmedarbi
  */
+import static edu.cecs343.labcode.CalendarHub.clearMasterPanel;
 import static edu.cecs343.labcode.SystemGUI.SEARCH;
 import static edu.cecs343.labcode.SystemGUI.apptBox;
 import static edu.cecs343.labcode.SystemGUI.apptDateTimeDoc;
@@ -66,10 +67,11 @@ public class WeeklyView {
 
     private String dates[];
     
-    //CalendarHub calHub = new CalendarHub();
+    CalendarHub calHub;
     
-    WeeklyView(){
+    WeeklyView(CalendarHub that){
         dates = ct.getDaysOfWeek();
+        calHub = that;
     }
     
     public JPanel weekView(){
@@ -115,9 +117,9 @@ public class WeeklyView {
             if(i == 0){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-//                        JButton t = new JButton("<<");
-//                        t.addActionListener(new LeftArrow());
-//                        tempPanel.add(t);
+                        WeekButton left = new WeekButton("<<", calHub.cal.decrementWeekRangeNoChange());
+                        left.addActionListener(new HandleWeekButton());
+                        tempPanel.add(left);
                     }
                     else if(j == 0){
                         tempPanel.add(new JLabel("               "));
@@ -131,9 +133,9 @@ public class WeeklyView {
             else if(i == 8){
                 for(int j = 0; j < oppTime.length; j++){
                     if(j == oppTime.length/2){
-//                        JButton t = new JButton(">>");
-//                        t.addActionListener(new RightArrow());
-//                        tempPanel.add(t);
+                        WeekButton right = new WeekButton(">>", calHub.cal.incrementWeekRangeNoChange());
+                        right.addActionListener(new HandleWeekButton());
+                        tempPanel.add(right);
                     }
                     else if(j == 0){
                         tempPanel.add(new JLabel("               "));
@@ -211,14 +213,14 @@ public class WeeklyView {
                 tempPanel.add(SystemGUI.mainLabel);
                 }
                 else if(i == 1){
-                    JButton t = new JButton("<<");
-                    t.addActionListener(new LeftArrow());
-                    tempPanel.add(t);
+                    WeekButton left = new WeekButton("<<", calHub.cal.decrementWeekRangeNoChange());
+                    left.addActionListener(new HandleWeekButton());
+                    tempPanel.add(left);
                 }
                 else if(i == 7){
-                    JButton t = new JButton(">>");
-                    t.addActionListener(new RightArrow());
-                    tempPanel.add(t);
+                    WeekButton right = new WeekButton(">>", calHub.cal.incrementWeekRangeNoChange());
+                    right.addActionListener(new HandleWeekButton());
+                    tempPanel.add(right);
                     
                 }
                 else{
@@ -268,6 +270,37 @@ public class WeeklyView {
         
     }
     
+    class WeekButton extends JButton
+    {
+        String weekDate = null;
+        //DayButton
+        WeekButton(String direction, String d)
+        {
+            super("" + direction);
+            weekDate = d;
+        } 
+    }
+    
+    class HandleWeekButton implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            WeekButton button = (WeekButton) e.getSource();
+            calHub.clearMasterPanel();
+            if (button.getText().equals("<<"))
+                calHub.cal.decrementWeekRange();
+            else
+                calHub.cal.incrementWeekRange();
+            System.out.println("Date Pressed: " + button.weekDate);
+            dates = ct.getDaysOfWeek();
+            if(apptDoc != null){
+                setDoc = true;
+            }
+            calHub.masterPanel.add(weekView());
+
+        }
+    }
+/*    
     class LeftArrow implements ActionListener{
 
         @Override
@@ -303,6 +336,7 @@ public class WeeklyView {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         
-    } 
+    }
+*/
     
 }

@@ -88,7 +88,7 @@ public class CalendarHub {
     //---------------------------------------- Increment/Decrement Buttons
     DayButton leftDay;
     
-    WeeklyView wv = new WeeklyView();
+    WeeklyView wv;
     
     public CalendarHub()
     {
@@ -98,6 +98,7 @@ public class CalendarHub {
         sysSQL = new SystemSQL();
         sysGUI = new SystemGUI(this);
         dateStuff = new AppointmentCreator();
+        wv = new WeeklyView(this);
         
         //---------------------------------------- Frame
         frame = new JFrame("Pro");
@@ -285,9 +286,9 @@ public class CalendarHub {
 
         JPanel dayAndButton = new JPanel();
         
-        DayButton leftDay = new DayButton("<<", this.cal.decrementDay());
+        DayButton leftDay = new DayButton("<<", cal.decrementDayNoChange());
         leftDay.addActionListener(new HandleDayButton());
-        DayButton rightDay = new DayButton(">>", this.cal.incrementDay());
+        DayButton rightDay = new DayButton(">>", cal.incrementDayNoChange());
         rightDay.addActionListener(new HandleDayButton());
         dayAndButton.add(leftDay);
         dayAndButton.add(contentPanel);
@@ -334,14 +335,17 @@ public class CalendarHub {
         
         weekCalendarPane = new JScrollPane(weekInfoPanel);
         weekCalendarPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        weekCalendarPane.setBounds(0, 0, 1100, 600);
+        weekCalendarPane.setBounds(0, 0, 900, 500);
+        // 1100 x 600
         contentPanel = new JPanel(null);
-        contentPanel.setPreferredSize(new Dimension(1100,600));
+        contentPanel.setPreferredSize(new Dimension(900,500));
         contentPanel.add(weekCalendarPane);
 
         JPanel weekAndButton = new JPanel();
-        JButton leftWeek = new JButton("<<");
-        JButton rightWeek = new JButton(">>");
+        WeekButton leftWeek = new WeekButton("<<", cal.decrementWeekRangeNoChange());
+        leftWeek.addActionListener(new HandleWeekButton());
+        WeekButton rightWeek = new WeekButton(">>", cal.incrementWeekRangeNoChange());
+        rightWeek.addActionListener(new HandleWeekButton());
         weekAndButton.add(leftWeek);
         weekAndButton.add(contentPanel);
         weekAndButton.add(rightWeek);
@@ -388,12 +392,21 @@ public class CalendarHub {
         contentPanel.add(monthCalendarPane);
 
         JPanel monthAndButton = new JPanel();
-        JButton leftMonth = new JButton("<<");
-        JButton rightMonth = new JButton(">>");
+        MonthButton leftMonth = new MonthButton("<<", cal.decrementMonthNoChange());
+        System.out.println(leftMonth.monthDate);
+        leftMonth.addActionListener(new HandleMonthButton());
+        MonthButton rightMonth = new MonthButton(">>", cal.incrementMonthNoChange());
+        System.out.println(rightMonth.monthDate);
+        rightMonth.addActionListener(new HandleMonthButton());
         monthAndButton.add(leftMonth);
         monthAndButton.add(contentPanel);
         monthAndButton.add(rightMonth);
         masterPanel.add(monthAndButton);
+    }
+    
+    public CalendarTest getCal()
+    {
+        return cal;
     }
     
     class DayButton extends JButton
@@ -422,17 +435,12 @@ public class CalendarHub {
         public void actionPerformed(ActionEvent e) {
             DayButton button = (DayButton) e.getSource();
             clearMasterPanel();
+            if (button.getText().equals("<<"))
+                cal.decrementDay();
+            else
+                cal.incrementDay();
             System.out.println("Date Pressed: " + button.dayDate);
-            currentDisplay = 1;
-            setVisibleHomePanel(currentEmployee, currentDisplay, button.dayDate);
-            if(button.getText().equals("<<")){
-                button.setDay(cal.decrementDay());
-                setHomePanel();
-            }
-            else if(button.getText().equals(">>")){
-                button.setDay(cal.incrementDay());
-                setHomePanel();
-            }
+            setDayInfoPanel(button.dayDate);
         }
     }
     
@@ -449,16 +457,18 @@ public class CalendarHub {
     
     class HandleWeekButton implements ActionListener
     {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WeekButton button = (WeekButton) e.getSource();
-                clearMasterPanel();
-                System.out.println("Date Pressed: " + button.weekDate);
-                currentDisplay = 2;
-                //Conflicting Problem!!!!
-                //setWeekInfoPanel(button.weekDate);
-                setVisibleHomePanel(currentEmployee, currentDisplay, button.weekDate);
-            }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            WeekButton button = (WeekButton) e.getSource();
+            clearMasterPanel();
+            if (button.getText().equals("<<"))
+                cal.decrementWeekRange();
+            else
+                cal.incrementWeekRange();
+            System.out.println("Date Pressed: " + button.weekDate);
+            setWeekInfoPanel(button.weekDate);
+
+        }
     }
     
     class MonthButton extends JButton
@@ -474,16 +484,17 @@ public class CalendarHub {
     
     class HandleMonthButton implements ActionListener
     {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MonthButton button = (MonthButton) e.getSource();
-                clearMasterPanel();
-                System.out.println("Date Pressed: " + button.monthDate);
-                currentDisplay = 3;
-                //Conflicting Problem!!!!
-                //setWeekInfoPanel(button.weekDate);
-                setVisibleHomePanel(currentEmployee, currentDisplay, button.monthDate);
-            }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            MonthButton button = (MonthButton) e.getSource();
+            clearMasterPanel();
+            if (button.getText().equals("<<"))
+                cal.decrementMonth();
+            else
+                cal.incrementMonth();
+            System.out.println("Date Pressed: " + button.monthDate);
+            setMonthInfoPanel(button.monthDate);
+        }
     }
     
     public static CalendarHub getInstance()

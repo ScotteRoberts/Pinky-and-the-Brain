@@ -16,6 +16,7 @@ import java.lang.*;
 public class CalendarTest{
     
     CalendarData calData;
+    CalendarData emails;
     
     class CalendarData
     {
@@ -119,6 +120,18 @@ public class CalendarTest{
             return (tempMonth + 1)  + "/" + tempDay + "/" + year;
         }
         
+        public String getWeekRange()
+        {
+            String weekStart = getFirstDayOfWeek();
+            //Change this immediately
+            int weekFinish = 1;
+            return "" + (month + 1) + "/" + weekStart + " - " + (month + 1) + "/" + weekFinish;
+        }
+        public String getMonth()
+        {
+            return (month + 1) + "/" + year;
+        }
+        
     }
     
     
@@ -155,6 +168,7 @@ public class CalendarTest{
       dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
       weekOfMonth = cal.get(Calendar.WEEK_OF_MONTH);
       calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
+      emails = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
       
     }
     
@@ -183,6 +197,7 @@ public class CalendarTest{
     {
         return "" + (month + 1) + "/" + day + "/" + year;
     }
+    
     public String getDay(int firstDay)
     {
         return "" + (month + 1) + "/" + firstDay + "/" + year;
@@ -227,7 +242,33 @@ public class CalendarTest{
         
         return getDay(firstDay);
     }
-    
+    public String incrementDayNoChange()
+    {
+        calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
+        if (calData.dayOfWeek+1 <= 7 && calData.day+1 <= daysInMonth[calData.month])
+            calData.day++;
+        else if (calData.day+1 <= daysInMonth[calData.month])
+        {
+            calData.day++;
+            calData.weekYear++;
+        }
+        else
+        {
+            calData.day = 1;
+            calData.month++;
+            calData.weekOfMonth = 1;
+        }
+
+        if(calData.dayOfWeek == 7)
+        {
+            calData.dayOfWeek = 1;
+            calData.weekOfMonth++;
+        }  
+        else
+            calData.dayOfWeek++;
+        
+        return calData.getDay();
+    }
     public String incrementDay()
     {
         if (dayOfWeek+1 <= 7 && day+1 <= daysInMonth[month])
@@ -254,7 +295,38 @@ public class CalendarTest{
         
         return getDay();
     }
-    
+    public String decrementDayNoChange()
+    {
+        calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
+        if (calData.day-1 != 0 && calData.dayOfWeek - 1 != 0)
+            calData.day--;
+        else if (calData.day - 1 != 0)
+        {
+            calData.day--;
+            calData.weekYear--;
+        }
+        else
+        {
+            calData.month--;
+            calData.day = daysInMonth[calData.month];
+            //reset weekMonth to some value
+            Calendar tempCal = Calendar.getInstance();
+            tempCal.set(calData.year, calData.month, calData.day);
+            calData.weekOfMonth = tempCal.get(Calendar.WEEK_OF_MONTH);
+        }
+        
+        
+        if (calData.dayOfWeek == 1)
+        {
+            calData.dayOfWeek = 7;
+            calData.weekOfMonth--;
+        }
+        else
+            calData.dayOfWeek--;
+        
+        return calData.getDay();
+        
+    }
     public String decrementDay()
     {
         if (day-1 != 0 && dayOfWeek - 1 != 0)
@@ -287,7 +359,25 @@ public class CalendarTest{
         
     }
     
-    
+    public String incrementWeekRangeNoChange()
+    {
+        calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
+        if (calData.day+7 <= daysInMonth[calData.month])
+        {
+            calData.day+=7;
+            calData.weekYear++;
+        }
+        else
+        {
+            calData.day = (calData.day+7) - daysInMonth[calData.month];
+            calData.month++;
+            calData.weekYear++;
+            //weekOfMonth = 1;
+            
+        }
+        
+        return calData.getWeekRange(); 
+    }
     public String incrementWeekRange()
     {
         if (day+7 <= daysInMonth[month])
@@ -305,6 +395,27 @@ public class CalendarTest{
         }
         
         return getWeekRange(); 
+    }
+    
+    public String decrementWeekRangeNoChange()
+    {
+        calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
+        if (calData.day-7 > 0)
+        {
+            calData.day-=7;
+            calData.weekYear--;
+            //weekOfMonth--;
+            
+        }
+        else
+        {
+            calData.month--;
+            calData.day = (calData.day-7) + daysInMonth[calData.month];
+            calData.weekYear--;
+            //weekOfMonth = ;
+            
+        }
+        return calData.getWeekRange();
     }
     
     public String decrementWeekRange()
@@ -332,8 +443,23 @@ public class CalendarTest{
         return (month + 1) + "/" + year;
     }
     
+    public String incrementMonthNoChange()
+    {
+        calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
+        if(calData.month+1 < 11)
+        {
+            calData.month++;
+        }
+        else
+        {
+            calData.month = 0;
+            calData.year++;
+        }
+        return calData.getMonth();
+    }
     public String incrementMonth()
     {
+        
         if(month+1 < 11)
         {
             month++;
@@ -344,6 +470,21 @@ public class CalendarTest{
             year++;
         }
         return getMonth();
+    }
+    
+    public String decrementMonthNoChange()
+    {
+        calData = new CalendarData(day, month, year, weekYear, dayOfWeek, weekOfMonth);
+        if (calData.month - 1 >= 0)
+        {
+            calData.month--;
+        }
+        else
+        {
+            calData.month = 11;
+            calData.year--;
+        }
+        return calData.getMonth();
     }
     
     public String decrementMonth()
@@ -488,6 +629,20 @@ public class CalendarTest{
             calTest.decrementDay();
         }
 */
+        
+        System.out.println("Date: " + calTest.getDay());
+            System.out.println("DayOfWeek: " + calTest.dayOfWeek);
+            System.out.println("WeekYear: " + calTest.weekYear);
+            System.out.println("WeekMonth: " + calTest.weekOfMonth);
+            calTest.incrementMonth();
+            
+        System.out.println("Date: " + calTest.getDay());
+            System.out.println("DayOfWeek: " + calTest.dayOfWeek);
+            System.out.println("WeekYear: " + calTest.weekYear);
+            System.out.println("WeekMonth: " + calTest.weekOfMonth);
+            calTest.decrementMonth();    
+            
+            
         System.out.println("Break ================================\n\n\n\n");
         for (int i = 0; i < 50; i++)
         {
