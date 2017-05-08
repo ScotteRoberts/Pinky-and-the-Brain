@@ -21,7 +21,7 @@ public class SendMail {
       String to = email;
 
       // Sender's email ID needs to be mentioned
-      String from = "csulbcecs343@gmail.com";
+      String from = "prometheuscecs343@gmail.com";
 
       // Assuming you are sending email from localhost
       String host = "localhost";
@@ -36,7 +36,7 @@ public class SendMail {
 
     session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication("csulbcecs343@gmail.com", "thesupercoders");
+            return new PasswordAuthentication("prometheuscecs343@gmail.com", "prometheus123");
         }
     });
 
