@@ -39,7 +39,7 @@ public class WeeklyView {
     private String [] months = {"1", "2", "3", "4", "5", "6", "7", "8",
         "9", "10", "11", "12"};
     private String daysOfWeek[] = {"Sunday", "Monday", "Tuesday", "Wednesday", 
-        "Thrusday", "Firday", "Saturday"};
+        "Thursday", "Friday", "Saturday"};
     private final String [] years = {"2017", "2018", "2019"};
     private JComboBox month = new JComboBox(months);
     private JComboBox day = new JComboBox();

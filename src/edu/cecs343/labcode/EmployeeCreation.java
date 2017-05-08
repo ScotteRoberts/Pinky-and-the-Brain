@@ -61,7 +61,7 @@ public class EmployeeCreation {
         mainPanel = new JPanel(new GridLayout(4, 1));
         
         // setup title
-        JLabel message = new JLabel("Create new Doctor", 
+        JLabel message = new JLabel("Create New Employee", 
                 JLabel.CENTER);
         
         message.setFont((new Font("ariel", Font.PLAIN, 24)));
@@ -643,10 +643,10 @@ public class EmployeeCreation {
         SystemGUI.clearAllText();
         
         // setup main mainPanel
-        mainPanel = new JPanel(new GridLayout(9, 1));
+        mainPanel = new JPanel(new GridLayout(11, 1));
         
         // setup title
-        JLabel message = new JLabel("Create schudle", 
+        JLabel message = new JLabel("Create Schedule", 
                 JLabel.CENTER);
         
         message.setFont((new Font("ariel", Font.PLAIN, 24)));
@@ -668,9 +668,24 @@ public class EmployeeCreation {
         }
         
         // setup button
-        JButton enter = new JButton("Enter");
-        enter.addActionListener(new ActionSchdule());
-        mainPanel.add(enter);
+//            JButton enter = new JButton("Enter");
+//            enter.addActionListener(new ActionSchdule());
+//            mainPanel.add(enter);
+        
+        JButton threeM =  new JButton("Set For 3 Months");
+        threeM.addActionListener(new ActionSchdule());
+        //threeM.setActionCommand(SEARCH);
+        mainPanel.add(threeM);
+        
+        JButton sixM = new JButton("Set For 6 Months");
+        sixM.addActionListener(new ActionSchdule());
+        //sixM.setActionCommand(SEARCH);
+        mainPanel.add(sixM);
+        
+        JButton yearS = new JButton("Set For Year");
+        yearS.addActionListener(new ActionSchdule());
+        //yearS.setActionCommand(SEARCH);
+        mainPanel.add(yearS);
         
         // Setup waring message
         SystemGUI.mainLabel =  new JLabel("");

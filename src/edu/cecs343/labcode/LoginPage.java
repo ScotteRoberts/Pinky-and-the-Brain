@@ -43,7 +43,7 @@ public class LoginPage {
         
         // Set second login panel
         JPanel userNameP2 =   new JPanel(new GridLayout(1,2));
-        JLabel password = new JLabel("Passowrd");
+        JLabel password = new JLabel("Password");
         SystemGUI.ePassword = new JPasswordField(10);
         userNameP2.add(password);
         userNameP2.add(SystemGUI.ePassword);

@@ -40,7 +40,7 @@ public class AppointmentCreator {
     private String [] months = {"1", "2", "3", "4", "5", "6", "7", "8",
         "9", "10", "11", "12"};
     private String daysOfWeek[] = {"Sunday", "Monday", "Tuesday", "Wednesday", 
-        "Thrusday", "Firday", "Saturday"};
+        "Thursday", "Friday", "Saturday"};
     private final String [] years = {"2017", "2018", "2019"};
     private JComboBox month = new JComboBox(months);
     private JComboBox day = new JComboBox();
@@ -287,10 +287,10 @@ public class AppointmentCreator {
         SystemGUI.clearAllText();
         
         // Set up mainPanel
-        mainPanel = new JPanel(new GridLayout(7,1));
+        mainPanel = new JPanel(new GridLayout(9,1));
         
         // setup title
-        JLabel message = new JLabel("Edit Appointment", 
+        JLabel message = new JLabel("Create Appointment", 
                 JLabel.CENTER);
         
         message.setFont((new Font("ariel", Font.PLAIN, 24)));
@@ -307,11 +307,12 @@ public class AppointmentCreator {
         panelInfo1.add(phone); panelInfo1.add(SystemGUI.ePhone);
         mainPanel.add(panelInfo1);
         
-        // Add Search button
+        // Add Selection button
         JButton search =  new JButton("Search");
         search.addActionListener(new SearchPatient());
         search.setActionCommand(SEARCH);
         mainPanel.add(search);
+        
         
         // Setup waring message
         SystemGUI.mainLabel =  new JLabel("");
